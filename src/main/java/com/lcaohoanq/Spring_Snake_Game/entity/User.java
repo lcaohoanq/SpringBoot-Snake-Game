@@ -1,16 +1,14 @@
-package com.lcaohoanq.Spring_Snake_Game.model;
+package com.lcaohoanq.Spring_Snake_Game.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidatorUtil;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -23,7 +21,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -104,6 +101,11 @@ public class User {
     @Transient
     @JsonIgnore
     private String confirmPassword;
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public User(Long id, String firstName, String lastName, String email, String phone, String password, String birthday, String address,  int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {
         this.id = id;

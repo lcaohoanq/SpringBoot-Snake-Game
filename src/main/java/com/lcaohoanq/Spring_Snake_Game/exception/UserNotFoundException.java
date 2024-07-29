@@ -1,5 +1,8 @@
 package com.lcaohoanq.Spring_Snake_Game.exception;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class UserNotFoundException extends RuntimeException {
 
     private Long id;

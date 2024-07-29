@@ -1,9 +1,10 @@
 package com.lcaohoanq.Spring_Snake_Game;
 
-import com.lcaohoanq.Spring_Snake_Game.model.Score;
-import com.lcaohoanq.Spring_Snake_Game.model.User;
+import com.lcaohoanq.Spring_Snake_Game.entity.Score;
+import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.ScoreRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
+import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +37,19 @@ public class SpringSnakeGameApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        PBKDF2 pbkdf2 = new PBKDF2();
+
         User user1 = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
-            "0987654321", "Iloveyou123!", "1999-07-01", "Ho Chi Minh", 1, 1,
+            "0987654321", pbkdf2.hash("Iloveyou123!".toCharArray()), "1999-07-01", "Ho Chi Minh", 1, 1,
             LocalDateTime.now().toString(),
             LocalDateTime.now().toString(), null, 0);
         User user2 = new User(2L, "duong", "nguyen", "manhduonglhp4@gmail.com",
-            "0987654322", "Iloveyou123!", "1999-07-01", "Ho Chi Minh", 1, 1,
+            "0987654322", pbkdf2.hash("Iloveyou123!".toCharArray()), "1999-07-01", "Ho Chi Minh", 1, 1,
             LocalDateTime.now().toString(),
             LocalDateTime.now().toString(), null, 0);
         User user3 = new User(3L, "thu", "minh", "thuttass@fpt.edu.vn",
-            "0987654323", "Iloveyou123!", "1999-07-01", "Ho Chi Minh", 1, 1,
+            "0987654323", pbkdf2.hash("Iloveyou123!".toCharArray()), "1999-07-01", "Ho Chi Minh", 1, 1,
             LocalDateTime.now().toString(),
             LocalDateTime.now().toString(), null, 0);
 

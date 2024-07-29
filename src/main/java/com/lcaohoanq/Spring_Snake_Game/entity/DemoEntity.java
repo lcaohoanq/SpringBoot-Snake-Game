@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.model;
+package com.lcaohoanq.Spring_Snake_Game.entity;
 
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import jakarta.persistence.EntityManager;

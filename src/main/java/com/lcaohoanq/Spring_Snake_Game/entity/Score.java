@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.model;
+package com.lcaohoanq.Spring_Snake_Game.entity;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.CascadeType;

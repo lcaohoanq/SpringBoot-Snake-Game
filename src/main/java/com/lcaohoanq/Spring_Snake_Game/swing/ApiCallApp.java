@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.lcaohoanq.Spring_Snake_Game.model.User;
+import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class ApiCallApp extends JFrame {
             try {
                 // Replace with your API URL
                 //https://jsonplaceholder.typicode.com/posts/1
-                String apiUrl = "http://localhost:8080/users";
+                String apiUrl = "http://localhost:8081/users";
                 HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(apiUrl))
                     .GET()

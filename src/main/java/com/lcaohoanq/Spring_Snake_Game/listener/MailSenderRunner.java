@@ -16,6 +16,6 @@ public class MailSenderRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //send this mail to EmployeeRole
-        mailSenderService.sendNewMail("hoangdz1604@gmail.com", EmailSubject.subjectRunningApp(), "appIsRunning", new Context());
+//        mailSenderService.sendNewMail("hoangdz1604@gmail.com", EmailSubject.subjectRunningApp(), "appIsRunning", new Context());
     }
 }
