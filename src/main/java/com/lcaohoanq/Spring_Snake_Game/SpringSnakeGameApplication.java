@@ -3,6 +3,7 @@ package com.lcaohoanq.Spring_Snake_Game;
 import com.lcaohoanq.Spring_Snake_Game.model.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import io.github.cdimascio.dotenv.Dotenv;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,7 +30,7 @@ public class SpringSnakeGameApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		userRepository.save(new User(1L, "hoang", "luu", "hoangdz1604@gmail.com", "0987654321", "lcaohoanq", "Iloveyou123!"));
-		userRepository.save(new User(2L, "duong", "manh", "manhduonglhp4@gmail.com", "0987654321", "duongnm", "Iloveyou123!"));
+		userRepository.save(new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
+			"0987654321", "Iloveyou123!", 1, 1, LocalDateTime.now().toString(), LocalDateTime.now().toString(), "avatar", 0));
 	}
 }

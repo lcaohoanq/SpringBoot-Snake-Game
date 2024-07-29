@@ -3,6 +3,7 @@ package com.lcaohoanq.Spring_Snake_Game.view;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lcaohoanq.Spring_Snake_Game.model.User;
 import java.awt.BorderLayout;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ApiCallApp extends JFrame {
 
     public ApiCallApp() {
         httpClient = HttpClient.newHttpClient();
-        objectMapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+        objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).enable(SerializationFeature.INDENT_OUTPUT);
 
         setTitle("API Call Example");
         setSize(400, 300);

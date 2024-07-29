@@ -1,11 +1,14 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
+import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.model.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
+import com.lcaohoanq.Spring_Snake_Game.util.ValidatorUtil;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +36,10 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    User createNew(@Valid @RequestBody User newUser) {
+    User createNew(@Valid @RequestBody User newUser, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            throw new MethodArgumentNotValidException(bindingResult);
+        }
         return userRepository.save(newUser);
     }
 
@@ -47,7 +53,7 @@ public class UserController {
 
         return userRepository.findById(id)
             .map(item -> {
-                item.setUsername(newUser.getUsername());
+                item.setFirstName(newUser.getFirstName());
                 return userRepository.save(item);
             })
             .orElseGet(() -> {
