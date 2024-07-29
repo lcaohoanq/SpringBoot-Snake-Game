@@ -11,26 +11,28 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.lcaohoanq.Spring_Snake_Game", "com.lcaohoanq.Spring_Snake_Game.listener"})
+@ComponentScan(basePackages = {"com.lcaohoanq.Spring_Snake_Game",
+    "com.lcaohoanq.Spring_Snake_Game.listener"})
 public class SpringSnakeGameApplication implements CommandLineRunner {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		Dotenv dotenv = Dotenv.load();
+        Dotenv dotenv = Dotenv.load();
 
-		// Now you can access environment variables
-		String dbUsername = dotenv.get("DB_USERNAME");
-		String dbPassword = dotenv.get("DB_PASSWORD");
+        // Now you can access environment variables
+        String dbUsername = dotenv.get("DB_USERNAME");
+        String dbPassword = dotenv.get("DB_PASSWORD");
 
-		SpringApplication.run(SpringSnakeGameApplication.class, args);
-	}
+        SpringApplication.run(SpringSnakeGameApplication.class, args);
+    }
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Override
-	public void run(String... args) throws Exception {
-		userRepository.save(new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
-			"0987654321", "Iloveyou123!", 1, 1, LocalDateTime.now().toString(), LocalDateTime.now().toString(), "avatar", 0));
-	}
+    @Override
+    public void run(String... args) throws Exception {
+        userRepository.save(new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
+            "0987654321", "Iloveyou123!", 1, 1, LocalDateTime.now().toString(),
+            LocalDateTime.now().toString(), null, 0));
+    }
 }
