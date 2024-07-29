@@ -3,12 +3,15 @@ package com.lcaohoanq.Spring_Snake_Game.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidatorUtil;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
@@ -20,12 +23,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "users")
 public class User {
@@ -33,7 +37,7 @@ public class User {
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long id;
 
     @NotNull //JSR-380 annotation
@@ -81,6 +85,9 @@ public class User {
     @Column(name="subscription", nullable = false)
     private int subscription;
 
+    @OneToOne(mappedBy = "user") // Refers to the user field in Score
+    private Score score;
+
     @Transient
     private String confirmPassword;
 
@@ -97,6 +104,42 @@ public class User {
         this.updated_at = updated_at;
         this.avatar_url = avatar_url;
         this.subscription = subscription;
+    }
+
+    public User(String firstName, String lastName, String email, String phone, String password, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {
+        this.id = -1L;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.role = role;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar_url = avatar_url;
+        this.subscription = subscription;
+    }
+
+    public User(Long id, String firstName, String lastName, String email, String phone, String password, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription, Score score) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.role = role;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar_url = avatar_url;
+        this.subscription = subscription;
+        this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
     public static void main(String[] args) {

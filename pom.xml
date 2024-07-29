@@ -122,6 +122,14 @@
         </includes>
         <targetPath>${project.build.outputDirectory}</targetPath>
       </resource>
+      <resource>
+        <directory>src/main/resources/META-INF</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>*.xml</include>
+        </includes>
+        <targetPath>${project.build.outputDirectory}/META-INF/</targetPath>
+      </resource>
     </resources>
     <plugins>
       <plugin>
