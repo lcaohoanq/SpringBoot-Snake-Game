@@ -1,5 +1,7 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
+import com.lcaohoanq.Spring_Snake_Game.dto.UserRequest;
+import com.lcaohoanq.Spring_Snake_Game.dto.UserResponse;
 import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.model.User;
@@ -10,6 +12,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +43,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    User createNew(@Valid @RequestBody User newUser, BindingResult bindingResult) {
+    ResponseEntity<UserResponse> createNew(@Valid @RequestBody UserRequest newUser, BindingResult bindingResult) {
         PBKDF2 pbkdf2 = new PBKDF2();
         if(bindingResult.hasErrors()) {
             log.error("Validation failed for user at: {}", newUser.getCreated_at());
@@ -49,7 +53,7 @@ public class UserController {
 //        newUser.setPhone(pbkdf2.hash(newUser.getPhone().toCharArray()));
         newUser.setPassword(pbkdf2.hash(newUser.getPassword().toCharArray()));
         log.info("Creating new user at: {}", newUser.getCreated_at());
-        return userRepository.save(newUser);
+        return new ResponseEntity<>(new UserResponse("Register successfully", "OK"), HttpStatus.OK);
     }
 
     @DeleteMapping("/users/{id}")

@@ -32,7 +32,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@JsonPropertyOrder({ "id", "firstName", "lastName", "email", "phone", "password", "role", "status", "created_at", "updated_at", "avatar_url", "subscription"})
+@JsonPropertyOrder({ "id", "firstName", "lastName", "email", "phone", "password", "birthday", "address", "role", "status", "created_at", "updated_at", "avatar_url", "subscription"})
 @Table(name = "users")
 public class User {
 
