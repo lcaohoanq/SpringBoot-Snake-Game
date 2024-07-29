@@ -1,6 +1,7 @@
 package com.lcaohoanq.Spring_Snake_Game.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidatorUtil;
 import jakarta.persistence.CascadeType;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@JsonPropertyOrder({ "id", "firstName", "lastName", "email", "phone", "password", "role", "status", "created_at", "updated_at", "avatar_url", "subscription"})
 @Table(name = "users")
 public class User {
 
@@ -86,9 +88,13 @@ public class User {
     private int subscription;
 
     @OneToOne(mappedBy = "user") // Refers to the user field in Score
+    @JsonIgnore
+    //what is JsonSetter and JsonGetter
+    //https://www.baeldung.com/jackson-jsonmappingexception
     private Score score;
 
     @Transient
+    @JsonIgnore
     private String confirmPassword;
 
     public User(Long id, String firstName, String lastName, String email, String phone, String password, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {

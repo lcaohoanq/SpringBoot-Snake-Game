@@ -1,5 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +21,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@JsonPropertyOrder({ "id", "last_score", "max_score", "created_at", "updated_at", "user"})
 @Entity
 public class Score {
 
