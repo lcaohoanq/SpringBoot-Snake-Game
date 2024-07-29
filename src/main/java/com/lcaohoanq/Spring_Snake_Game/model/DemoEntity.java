@@ -22,7 +22,7 @@ public class DemoEntity {
             // Create a User object first
             User user = new User("hoang", "luu", "hoangdz1604@gmail.com",
                 "0905288699",
-                new PBKDF2().hash("Iloveyou123!".toCharArray()),
+                new PBKDF2().hash("Iloveyou123!".toCharArray()), "1999-04-16", "Ha Noi",
                 1, 1,
                 LocalDateTime.now().toString(), LocalDateTime.now().toString(),
                 null, 0);

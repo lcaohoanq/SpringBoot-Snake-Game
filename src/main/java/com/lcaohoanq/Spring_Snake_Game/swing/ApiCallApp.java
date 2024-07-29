@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.view;
+package com.lcaohoanq.Spring_Snake_Game.swing;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

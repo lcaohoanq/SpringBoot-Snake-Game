@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.thymeleaf.context.Context;
 
 @RestController
 public class MailController {
@@ -19,7 +20,8 @@ public class MailController {
     @PostMapping("/send-mail")
     ResponseEntity<MailResponse> sendMail(@RequestBody MailRequest mailRequest) {
         try {
-            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(), mailRequest.getBody());
+            Context context = new Context();
+            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(), mailRequest.getBody(), context);
             MailResponse response = new MailResponse("Mail sent successfully", true);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

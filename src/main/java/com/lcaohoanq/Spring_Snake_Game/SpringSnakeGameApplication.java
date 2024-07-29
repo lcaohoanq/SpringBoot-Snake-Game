@@ -37,13 +37,16 @@ public class SpringSnakeGameApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         User user1 = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
-            "0987654321", "Iloveyou123!", 1, 1, LocalDateTime.now().toString(),
+            "0987654321", "Iloveyou123!", "1999-07-01", "Ho Chi Minh", 1, 1,
+            LocalDateTime.now().toString(),
             LocalDateTime.now().toString(), null, 0);
         User user2 = new User(2L, "duong", "nguyen", "manhduonglhp4@gmail.com",
-            "0987654322", "Iloveyou123!", 1, 1, LocalDateTime.now().toString(),
+            "0987654322", "Iloveyou123!", "1999-07-01", "Ho Chi Minh", 1, 1,
+            LocalDateTime.now().toString(),
             LocalDateTime.now().toString(), null, 0);
         User user3 = new User(3L, "thu", "minh", "thuttass@fpt.edu.vn",
-            "0987654323", "Iloveyou123!", 1, 1, LocalDateTime.now().toString(),
+            "0987654323", "Iloveyou123!", "1999-07-01", "Ho Chi Minh", 1, 1,
+            LocalDateTime.now().toString(),
             LocalDateTime.now().toString(), null, 0);
 
         userRepository.save(user1);

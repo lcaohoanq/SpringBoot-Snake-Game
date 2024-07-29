@@ -64,6 +64,14 @@ public class User {
     private String password;
 
     @NotNull
+    @Column(name="birthday", nullable = false)
+    private String birthday;
+
+    @NotNull
+    @Column(name="address", nullable = false)
+    private String address;
+
+    @NotNull
     @Column(name="role", nullable = false)
     private int role;
 
@@ -97,13 +105,15 @@ public class User {
     @JsonIgnore
     private String confirmPassword;
 
-    public User(Long id, String firstName, String lastName, String email, String phone, String password, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {
+    public User(Long id, String firstName, String lastName, String email, String phone, String password, String birthday, String address,  int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.password = password;
+        this.birthday = birthday;
+        this.address = address;
         this.role = role;
         this.status = status;
         this.created_at = created_at;
@@ -112,13 +122,15 @@ public class User {
         this.subscription = subscription;
     }
 
-    public User(String firstName, String lastName, String email, String phone, String password, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {
+    public User(String firstName, String lastName, String email, String phone, String password, String birthday, String address, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {
         this.id = -1L;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.password = password;
+        this.birthday = birthday;
+        this.address = address;
         this.role = role;
         this.status = status;
         this.created_at = created_at;
@@ -127,13 +139,15 @@ public class User {
         this.subscription = subscription;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String phone, String password, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription, Score score) {
+    public User(Long id, String firstName, String lastName, String email, String phone, String password, String birthday, String address, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription, Score score) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.password = password;
+        this.birthday = birthday;
+        this.address = address;
         this.role = role;
         this.status = status;
         this.created_at = created_at;
@@ -150,7 +164,7 @@ public class User {
 
     public static void main(String[] args) {
         User user = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
-            "0987654321", new PBKDF2().hash("Iloveyou123!".toCharArray()), 1, 1, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
+            "0987654321", new PBKDF2().hash("Iloveyou123!".toCharArray()), "1999-07-01", "Ho Chi Minh", 1, 1, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
         try {
             ValidatorUtil.validate(user);
             System.out.println("User is valid");

@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.util;
+package com.lcaohoanq.Spring_Snake_Game.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Properties;
@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
-public class MailConfiguration {
+public class MailConfig {
 
     Dotenv dotenv = Dotenv.load();
 
