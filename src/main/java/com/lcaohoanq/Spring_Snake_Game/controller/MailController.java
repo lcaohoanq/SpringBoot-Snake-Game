@@ -8,6 +8,7 @@ import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.service.MailSenderService;
 import com.lcaohoanq.Spring_Snake_Game.util.OTPUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,40 +26,32 @@ public class MailController {
     private MailSenderService mailSenderService;
 
     @Autowired
-    private UserRepository userRepository;
+    private HttpServletRequest request;
 
     @GetMapping("/mail/send-otp")
-    ResponseEntity<MailResponse> sendOtp(@RequestParam String to) {
-        try {
-            User user = userRepository.findByEmail(to);
-            if(user == null){
-                throw new UserNotFoundException(to);
-            }
-            String name = user.getFirstName();
-            Context context = new Context();
-            context.setVariable("name", name);
-            context.setVariable("otp", OTPUtils.generateOTP());
-            mailSenderService.sendNewMail(to, EmailSubject.subjectGreeting(name), "sendOtp", context);
-            MailResponse response = new MailResponse("Mail sent successfully", true);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (UserNotFoundException e) {
-            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(), false);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(), false);
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    ResponseEntity<MailResponse> sendOtp(@RequestParam String toEmail) {
+        User user = (User) request.getAttribute("validatedUser");
+        String name = user.getFirstName();
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("otp", OTPUtils.generateOTP());
+        mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name), "sendOtp",
+            context);
+        MailResponse response = new MailResponse("Mail sent successfully", "ok");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/mail/block")
     ResponseEntity<MailResponse> sendBlockAccount(@RequestBody MailRequest mailRequest) {
         try {
             Context context = new Context();
-            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(), mailRequest.getBody(), context);
-            MailResponse response = new MailResponse("Mail sent successfully", true);
+            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(),
+                mailRequest.getBody(), context);
+            MailResponse response = new MailResponse("Mail sent successfully", "ok");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(), false);
+            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(),
+                "error");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -67,15 +60,16 @@ public class MailController {
     ResponseEntity<MailResponse> sendForgotPassword(@RequestBody MailRequest mailRequest) {
         try {
             Context context = new Context();
-            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(), mailRequest.getBody(), context);
-            MailResponse response = new MailResponse("Mail sent successfully", true);
+            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(),
+                mailRequest.getBody(), context);
+            MailResponse response = new MailResponse("Mail sent successfully", "ok");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(), false);
+            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(),
+                "error");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 }

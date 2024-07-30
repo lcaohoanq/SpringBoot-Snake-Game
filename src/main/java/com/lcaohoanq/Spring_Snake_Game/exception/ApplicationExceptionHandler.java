@@ -1,5 +1,8 @@
 package com.lcaohoanq.Spring_Snake_Game.exception;
 
+import com.lcaohoanq.Spring_Snake_Game.dto.ApiResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.MailResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.UserResponse;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -16,8 +19,11 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String userNotFoundHandler(UserNotFoundException ex) {
-        return ex.getMessage();
+    public ResponseEntity<ApiResponse> userNotFoundHandler(UserNotFoundException ex) {
+        if(ex.getMessage().contains("email")) {
+            return new ResponseEntity<>(new MailResponse(ex.getMessage(), "error"), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(new UserResponse(ex.getMessage(), "error"), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -31,6 +37,11 @@ public class ApplicationExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGenericException(Exception ex) {
+        return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
