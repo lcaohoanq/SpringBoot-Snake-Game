@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,9 +29,12 @@ public class MailController {
     @Autowired
     private HttpServletRequest request;
 
+    private User user = null;
+
     @GetMapping("/mail/send-otp")
-    ResponseEntity<MailResponse> sendOtp(@RequestParam String toEmail) {
-        User user = (User) request.getAttribute("validatedUser");
+    ResponseEntity<MailResponse> sendOtp(@RequestParam String toEmail, @RequestAttribute User validatedUser) {
+        System.out.println("Data: " + validatedUser.getEmail());
+        user = (User) request.getAttribute("validatedUser");
         String name = user.getFirstName();
         Context context = new Context();
         context.setVariable("name", name);
@@ -41,34 +45,30 @@ public class MailController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/mail/block")
-    ResponseEntity<MailResponse> sendBlockAccount(@RequestBody MailRequest mailRequest) {
-        try {
-            Context context = new Context();
-            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(),
-                mailRequest.getBody(), context);
-            MailResponse response = new MailResponse("Mail sent successfully", "ok");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(),
-                "error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/mail/block")
+    ResponseEntity<MailResponse> sendBlockAccount(@RequestParam String toEmail) {
+        user = (User) request.getAttribute("validatedUser");
+        String name = user.getFirstName();
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("otp", OTPUtils.generateOTP());
+        mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name), "sendOtp",
+            context);
+        MailResponse response = new MailResponse("Mail sent successfully", "ok");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/mail/forgot-password")
-    ResponseEntity<MailResponse> sendForgotPassword(@RequestBody MailRequest mailRequest) {
-        try {
-            Context context = new Context();
-            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(),
-                mailRequest.getBody(), context);
-            MailResponse response = new MailResponse("Mail sent successfully", "ok");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(),
-                "error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/mail/forgot-password")
+    ResponseEntity<MailResponse> sendForgotPassword(@RequestParam String toEmail) {
+        user = (User) request.getAttribute("validatedUser");
+        String name = user.getFirstName();
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("otp", OTPUtils.generateOTP());
+        mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name), "sendOtp",
+            context);
+        MailResponse response = new MailResponse("Mail sent successfully", "ok");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
