@@ -1,6 +1,6 @@
 services:
   db:
-    image: lcaohoanq/snake_game_app:2.0
+    image: lcaohoanq/sample-mysql-db:2.0
     container_name: spring_snake_game
     ports:
       - "3308:3306"
