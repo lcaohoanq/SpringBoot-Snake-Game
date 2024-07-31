@@ -33,17 +33,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    private List<User> demoList = List.of(
-        new User(10L, "minh", "nhu", "tranthiminhnhu@gmail.com",
-            "0905288699", "$31$16$GcvQCMYKe7MvCzsGk-gq8nsAMqahchPHetFCtLEqhZs", "1999-07-01", "Ho Chi Minh", 1, 1,
-            LocalDateTime.now().toString(),
-            LocalDateTime.now().toString(), null, 0),
-        new User(11L, "anh", "hao", "macanhhao@gmail.com",
-        "0905656365", "$31$16$GcvQCMYKe7MvCzsGk-gq8nsAMqahchPHetFCtLEqhZs", "1999-07-01", "Ho Chi Minh", 1, 1,
-        LocalDateTime.now().toString(),
-            LocalDateTime.now().toString(), null, 0)
-    );
-
     @GetMapping("/users")
     List<User> all() {
         return userRepository.findAll();
@@ -65,10 +54,10 @@ public class UserController {
             throw new MethodArgumentNotValidException(bindingResult);
         }
 
-        boolean emailExists = demoList.stream()
+        boolean emailExists = userRepository.findAll().stream()
             .anyMatch(user -> user.getEmail().equals(newUser.getEmail()));
 
-        boolean phoneExists = demoList.stream()
+        boolean phoneExists = userRepository.findAll().stream()
             .anyMatch(user -> user.getPhone().equals(newUser.getPhone()));
 
         if (emailExists) {
@@ -97,7 +86,7 @@ public class UserController {
 
         // Check email or phone
         if(user.getEmail_phone().contains("@")) {
-            userFound = demoList.stream()
+            userFound = userRepository.findAll().stream()
                 .filter(u -> u.getEmail().equals(user.getEmail_phone()))
                 .findFirst()
                 .orElse(null);
@@ -107,7 +96,7 @@ public class UserController {
                 return new ResponseEntity<>(new UserResponse("Email not found", "ERROR"), HttpStatus.BAD_REQUEST);
             }
         } else {
-            userFound = demoList.stream()
+            userFound = userRepository.findAll().stream()
                 .filter(u -> u.getPhone().equals(user.getEmail_phone()))
                 .findFirst()
                 .orElse(null);

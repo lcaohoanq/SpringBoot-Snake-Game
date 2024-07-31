@@ -4,6 +4,8 @@ import com.lcaohoanq.Spring_Snake_Game.constant.EmailSubject;
 import com.lcaohoanq.Spring_Snake_Game.dto.MailRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.MailResponse;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.enums.EmailBlockReasonEnum;
+import com.lcaohoanq.Spring_Snake_Game.enums.EmailCategoriesEnum;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.service.MailSenderService;
@@ -35,40 +37,34 @@ public class MailController {
         Context context = new Context();
         context.setVariable("name", name);
         context.setVariable("otp", OTPUtils.generateOTP());
-        mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name), "sendOtp",
+        mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name),
+            EmailCategoriesEnum.OTP.getType(),
             context);
         MailResponse response = new MailResponse("Mail sent successfully", "ok");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/mail/block")
-    ResponseEntity<MailResponse> sendBlockAccount(@RequestBody MailRequest mailRequest) {
-        try {
-            Context context = new Context();
-            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(),
-                mailRequest.getBody(), context);
-            MailResponse response = new MailResponse("Mail sent successfully", "ok");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(),
-                "error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/mail/block")
+    ResponseEntity<MailResponse> sendBlockAccount(@RequestParam String toEmail) {
+        User user = (User) request.getAttribute("validatedUser");
+        Context context = new Context();
+        context.setVariable("reason", EmailBlockReasonEnum.ABUSE.getReason());
+        mailSenderService.sendNewMail(toEmail, EmailSubject.subjectBlockEmail(user.getFirstName()),
+            EmailCategoriesEnum.BLOCK_ACCOUNT.getType(), context);
+        MailResponse response = new MailResponse("Mail sent successfully", "ok");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/mail/forgot-password")
-    ResponseEntity<MailResponse> sendForgotPassword(@RequestBody MailRequest mailRequest) {
-        try {
-            Context context = new Context();
-            mailSenderService.sendNewMail(mailRequest.getTo(), mailRequest.getSubject(),
-                mailRequest.getBody(), context);
-            MailResponse response = new MailResponse("Mail sent successfully", "ok");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            MailResponse response = new MailResponse("Failed to send mail: " + e.getMessage(),
-                "error");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/mail/forgot-password")
+    ResponseEntity<MailResponse> sendForgotPassword(@RequestParam String toEmail) {
+        User user = (User) request.getAttribute("validatedUser");
+        String name = user.getFirstName();
+        Context context = new Context();
+        context.setVariable("name", name);
+        context.setVariable("otp", OTPUtils.generateOTP());
+        mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name), EmailCategoriesEnum.FORGOT_PASSWORD.getType(), context);
+        MailResponse response = new MailResponse("Mail sent successfully", "ok");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
