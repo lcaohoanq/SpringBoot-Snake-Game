@@ -39,6 +39,13 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UserHasBeenBannedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ApiResponse> userNotFoundHandler(UserHasBeenBannedException ex) {
+        return new ResponseEntity<>(new UserResponse(ex.getMessage(), "error"), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
         return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);

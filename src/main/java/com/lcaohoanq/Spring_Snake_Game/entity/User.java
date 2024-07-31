@@ -2,6 +2,9 @@ package com.lcaohoanq.Spring_Snake_Game.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
+import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
+import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidatorUtil;
 import jakarta.persistence.Column;
@@ -29,7 +32,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@JsonPropertyOrder({ "id", "firstName", "lastName", "email", "phone", "password", "birthday", "address", "role", "status", "created_at", "updated_at", "avatar_url", "subscription"})
+@JsonPropertyOrder({"id", "firstName", "lastName", "email", "phone", "password", "birthday",
+    "address", "gender", "role", "status", "created_at", "updated_at", "avatar_url",
+    "subscription"})
 @Table(name = "users")
 public class User {
 
@@ -61,35 +66,39 @@ public class User {
     private String password;
 
     @NotNull
-    @Column(name="birthday", nullable = false)
+    @Column(name = "birthday", nullable = false)
     private String birthday;
 
     @NotNull
-    @Column(name="address", nullable = false)
+    @Column(name = "address", nullable = false)
     private String address;
 
     @NotNull
-    @Column(name="role", nullable = false)
-    private int role;
+    @Column(name = "gender", nullable = false)
+    private UserGenderEnum gender;
 
     @NotNull
-    @Column(name="status", nullable = false)
-    private int status;
+    @Column(name = "role", nullable = false)
+    private UserRoleEnum role;
 
     @NotNull
-    @Column(name="created_at", nullable = false)
+    @Column(name = "status", nullable = false)
+    private UserStatusEnum status;
+
+    @NotNull
+    @Column(name = "created_at", nullable = false)
     private String created_at;
 
     @NotNull
-    @Column(name="updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private String updated_at;
 
     @Lob
-    @Column(name="avatar_url", length = 1000000)
+    @Column(name = "avatar_url", length = 1000000)
     private byte[] avatar_url;
 
     @NotNull
-    @Column(name="subscription", nullable = false)
+    @Column(name = "subscription", nullable = false)
     private int subscription;
 
     @OneToOne(mappedBy = "user") // Refers to the user field in Score
@@ -107,7 +116,10 @@ public class User {
         this.password = password;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String phone, String password, String birthday, String address,  int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {
+    public User(Long id, String firstName, String lastName, String email, String phone,
+        String password, String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
+        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        int subscription) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -116,6 +128,7 @@ public class User {
         this.password = password;
         this.birthday = birthday;
         this.address = address;
+        this.gender = gender;
         this.role = role;
         this.status = status;
         this.created_at = created_at;
@@ -124,7 +137,10 @@ public class User {
         this.subscription = subscription;
     }
 
-    public User(String firstName, String lastName, String email, String phone, String password, String birthday, String address, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription) {
+    public User(String firstName, String lastName, String email, String phone, String password,
+        String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
+        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        int subscription) {
         this.id = -1L;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -133,6 +149,7 @@ public class User {
         this.password = password;
         this.birthday = birthday;
         this.address = address;
+        this.gender = gender;
         this.role = role;
         this.status = status;
         this.created_at = created_at;
@@ -141,7 +158,10 @@ public class User {
         this.subscription = subscription;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String phone, String password, String birthday, String address, int role, int status, String created_at, String updated_at, byte[] avatar_url, int subscription, Score score) {
+    public User(Long id, String firstName, String lastName, String email, String phone,
+        String password, String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
+        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        int subscription, Score score) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -150,6 +170,7 @@ public class User {
         this.password = password;
         this.birthday = birthday;
         this.address = address;
+        this.gender = gender;
         this.role = role;
         this.status = status;
         this.created_at = created_at;
@@ -166,7 +187,9 @@ public class User {
 
     public static void main(String[] args) {
         User user = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
-            "0987654321", new PBKDF2().hash("Iloveyou123!".toCharArray()), "1999-07-01", "Ho Chi Minh", 1, 1, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
+            "0987654321", new PBKDF2().hash("Iloveyou123!".toCharArray()), "1999-07-01",
+            "Ho Chi Minh", UserGenderEnum.MALE, UserRoleEnum.USER, UserStatusEnum.VERIFIED,
+            LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
         try {
             ValidatorUtil.validate(user);
             System.out.println("User is valid");

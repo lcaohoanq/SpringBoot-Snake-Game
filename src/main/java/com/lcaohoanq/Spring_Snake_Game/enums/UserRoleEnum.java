@@ -2,17 +2,16 @@ package com.lcaohoanq.Spring_Snake_Game.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
-public enum RoleEnum {
+public enum UserRoleEnum {
 
-    USER(1),
-    USER_GOLD(2),
-    USER_PREMIUM(3),
-    EMPLOYEE(4),
-    ADMIN(5);
+    USER(0),
+    USER_GOLD(1),
+    USER_PREMIUM(2),
+    EMPLOYEE(3),
+    ADMIN(4);
 
     private final int role;
 

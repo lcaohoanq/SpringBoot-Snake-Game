@@ -1,5 +1,8 @@
 package com.lcaohoanq.Spring_Snake_Game.entity;
 
+import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
+import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
+import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -23,7 +26,8 @@ public class DemoEntity {
             User user = new User("hoang", "luu", "hoangdz1604@gmail.com",
                 "0905288699",
                 new PBKDF2().hash("Iloveyou123!".toCharArray()), "1999-04-16", "Ha Noi",
-                1, 1,
+                UserGenderEnum.FEMALE,
+                UserRoleEnum.USER, UserStatusEnum.VERIFIED,
                 LocalDateTime.now().toString(), LocalDateTime.now().toString(),
                 null, 0);
 

@@ -6,6 +6,7 @@ import com.lcaohoanq.Spring_Snake_Game.dto.MailResponse;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.EmailBlockReasonEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.EmailCategoriesEnum;
+import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.service.MailSenderService;
@@ -30,9 +31,14 @@ public class MailController {
     @Autowired
     private HttpServletRequest request;
 
-    @GetMapping("/mail/send-otp")
-    ResponseEntity<MailResponse> sendOtp(@RequestParam String toEmail) {
-        User user = (User) request.getAttribute("validatedUser");
+    //api: /otp/send?type=email&recipient=abc@gmail
+    public ResponseEntity<MailResponse> sendOtp(@RequestParam String toEmail) {
+        User user = (User) request.getAttribute("validatedEmail");
+
+        if(user.getStatus() == UserStatusEnum.VERIFIED){
+            return new ResponseEntity<>(new MailResponse("Email already verified", "error"), HttpStatus.BAD_REQUEST);
+        }
+
         String name = user.getFirstName();
         Context context = new Context();
         context.setVariable("name", name);
@@ -46,7 +52,7 @@ public class MailController {
 
     @GetMapping("/mail/block")
     ResponseEntity<MailResponse> sendBlockAccount(@RequestParam String toEmail) {
-        User user = (User) request.getAttribute("validatedUser");
+        User user = (User) request.getAttribute("validatedEmail");
         Context context = new Context();
         context.setVariable("reason", EmailBlockReasonEnum.ABUSE.getReason());
         mailSenderService.sendNewMail(toEmail, EmailSubject.subjectBlockEmail(user.getFirstName()),
@@ -57,7 +63,7 @@ public class MailController {
 
     @GetMapping("/mail/forgot-password")
     ResponseEntity<MailResponse> sendForgotPassword(@RequestParam String toEmail) {
-        User user = (User) request.getAttribute("validatedUser");
+        User user = (User) request.getAttribute("validatedEmail");
         String name = user.getFirstName();
         Context context = new Context();
         context.setVariable("name", name);
