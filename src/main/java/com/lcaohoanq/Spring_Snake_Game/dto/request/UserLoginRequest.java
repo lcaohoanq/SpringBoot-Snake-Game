@@ -1,16 +1,12 @@
 package com.lcaohoanq.Spring_Snake_Game.dto.request;
 
 
-import com.lcaohoanq.Spring_Snake_Game.dto.AbstractRequest;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class UserLoginRequest extends AbstractRequest {
-
+@AllArgsConstructor
+public class UserLoginRequest {
     private String email_phone;
-
-    public UserLoginRequest(String email_phone, String password) {
-        super(email_phone, password);
-    }
-
+    private String password;
 }
