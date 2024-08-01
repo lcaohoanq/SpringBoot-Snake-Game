@@ -1,6 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.ApiResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.JwtResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.UserLoginRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.UserRegisterRequest;
@@ -11,7 +11,6 @@ import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,21 +61,21 @@ public class UserController {
 
         if (emailExists) {
             log.error("Email already registered: {}", newUser.getEmail());
-            return new ResponseEntity<>(new UserResponse("Email already registered", "ERROR"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new UserResponse("Email already registered"), HttpStatus.BAD_REQUEST);
         } else if(phoneExists) {
             log.error("Phone number already registered: {}", newUser.getPhone());
-            return new ResponseEntity<>(new UserResponse("Phone number already registered", "ERROR"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new UserResponse("Phone number already registered"), HttpStatus.BAD_REQUEST);
         }
 
         // Hash the password before saving the user
         newUser.setPassword(pbkdf2.hash(newUser.getPassword().toCharArray()));
         log.info("Creating new user at: {}", newUser.getCreated_at());
         // Note: Normally you would save the user to the repository here
-        return new ResponseEntity<>(new UserResponse("Register successfully", "OK"), HttpStatus.OK);
+        return new ResponseEntity<>(new UserResponse("Register successfully"), HttpStatus.OK);
     }
 
     @PostMapping("/users/login")
-    ResponseEntity<ApiResponse> login(@Valid @RequestBody UserLoginRequest user, BindingResult bindingResult) {
+    ResponseEntity<AbstractResponse> login(@Valid @RequestBody UserLoginRequest user, BindingResult bindingResult) {
         User userFound = null;
         PBKDF2 pbkdf2 = new PBKDF2();
         if(bindingResult.hasErrors()) {
@@ -93,7 +92,7 @@ public class UserController {
 
             if (userFound == null) {
                 log.error("Email not found: {}", user.getEmail_phone());
-                return new ResponseEntity<>(new UserResponse("Email not found", "ERROR"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new UserResponse("Email not found"), HttpStatus.BAD_REQUEST);
             }
         } else {
             userFound = userRepository.findAll().stream()
@@ -103,21 +102,21 @@ public class UserController {
 
             if (userFound == null) {
                 log.error("Phone number not found: {}", user.getEmail_phone());
-                return new ResponseEntity<>(new UserResponse("Phone number not found", "ERROR"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new UserResponse("Phone number not found"), HttpStatus.BAD_REQUEST);
             }
         }
 
         if (!pbkdf2.authenticate(user.getPassword().toCharArray(), userFound.getPassword())) {
             log.error("Password not match: {}", user.getEmail_phone());
-            return new ResponseEntity<>(new UserResponse("Password not match", "ERROR"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new UserResponse("Password not match"), HttpStatus.BAD_REQUEST);
         }
 
         log.info("Login successfully: {}", user.getEmail_phone());
 
         // Generate tokens
-        JwtResponse userResponse = new JwtResponse("accessToken", "refreshToken");
+        JwtResponse jwtResponse = new JwtResponse("accessToken", "refreshToken");
 
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
     }
 
 

@@ -7,9 +7,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserResponse implements ApiResponse {
-    private String message;
-    private String status;
+public class UserResponse extends AbstractResponse {
+
+    public UserResponse(String message, String status) {
+        super(message, status);
+    }
+
+    public UserResponse(String message) {
+        super(message);
+    }
+
 }

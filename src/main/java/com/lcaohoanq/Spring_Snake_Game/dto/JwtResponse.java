@@ -7,7 +7,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class JwtResponse implements ApiResponse {
-    private String accessToken;
-    private String refreshToken;
+public class JwtResponse extends AbstractResponse {
+
+    public JwtResponse(String accessToken, String refreshToken) {
+        super(accessToken, refreshToken);
+    }
+
 }

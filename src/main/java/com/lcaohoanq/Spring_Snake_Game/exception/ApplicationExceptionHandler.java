@@ -1,6 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.exception;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.ApiResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.MailResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.UserResponse;
 import java.util.HashMap;
@@ -19,9 +19,9 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ApiResponse> userNotFoundHandler(UserNotFoundException ex) {
+    public ResponseEntity<AbstractResponse> userNotFoundHandler(UserNotFoundException ex) {
         if(ex.getMessage().contains("email")) {
-            return new ResponseEntity<>(new MailResponse(ex.getMessage(), "error"), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MailResponse(ex.getMessage(), "error", null), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(new UserResponse(ex.getMessage(), "error"), HttpStatus.NOT_FOUND);
     }
@@ -42,7 +42,7 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(UserHasBeenBannedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ApiResponse> userNotFoundHandler(UserHasBeenBannedException ex) {
+    public ResponseEntity<AbstractResponse> userNotFoundHandler(UserHasBeenBannedException ex) {
         return new ResponseEntity<>(new UserResponse(ex.getMessage(), "error"), HttpStatus.BAD_REQUEST);
     }
 

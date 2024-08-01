@@ -41,12 +41,13 @@ public class MailController {
 
         String name = user.getFirstName();
         Context context = new Context();
+        String otp = OTPUtils.generateOTP();
         context.setVariable("name", name);
-        context.setVariable("otp", OTPUtils.generateOTP());
+        context.setVariable("otp", otp);
         mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name),
             EmailCategoriesEnum.OTP.getType(),
             context);
-        MailResponse response = new MailResponse("Mail sent successfully", "ok");
+        MailResponse response = new MailResponse("Mail sent successfully", "ok", otp);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -66,10 +67,11 @@ public class MailController {
         User user = (User) request.getAttribute("validatedEmail");
         String name = user.getFirstName();
         Context context = new Context();
+        String otp = OTPUtils.generateOTP();
         context.setVariable("name", name);
-        context.setVariable("otp", OTPUtils.generateOTP());
+        context.setVariable("otp", otp);
         mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name), EmailCategoriesEnum.FORGOT_PASSWORD.getType(), context);
-        MailResponse response = new MailResponse("Mail sent successfully", "ok");
+        MailResponse response = new MailResponse("Mail sent successfully", "ok" , otp);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

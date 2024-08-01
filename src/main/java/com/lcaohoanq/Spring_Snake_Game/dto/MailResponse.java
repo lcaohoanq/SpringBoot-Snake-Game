@@ -9,7 +9,17 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MailResponse implements ApiResponse {
-    private String message;
-    private String status;
+public class MailResponse extends AbstractResponse {
+
+    private String otp;
+
+    public MailResponse(String message, String status) {
+        super(message, status);
+    }
+
+    public MailResponse(String message, String status, String otp) {
+        super(message);
+        this.otp = otp;
+    }
+
 }

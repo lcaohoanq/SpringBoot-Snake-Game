@@ -1,5 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,21 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AbstractResponse {
 
-    private String message;
-    private String status;
+    protected String message;
+    protected String status;
+    protected String accessToken;
+    protected String refreshToken;
+
+    public AbstractResponse(String message){
+        this.message = message;
+    }
+
+    public AbstractResponse(String accessToken, String refreshToken){
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 
 }
