@@ -1,14 +1,11 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
 import com.lcaohoanq.Spring_Snake_Game.constant.EmailSubject;
-import com.lcaohoanq.Spring_Snake_Game.dto.MailRequest;
-import com.lcaohoanq.Spring_Snake_Game.dto.MailResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.response.MailResponse;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.EmailBlockReasonEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.EmailCategoriesEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
-import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
-import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.service.MailSenderService;
 import com.lcaohoanq.Spring_Snake_Game.util.OTPUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.context.Context;

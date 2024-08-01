@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.dto;
+package com.lcaohoanq.Spring_Snake_Game.dto.request;
 
 
 import lombok.Getter;

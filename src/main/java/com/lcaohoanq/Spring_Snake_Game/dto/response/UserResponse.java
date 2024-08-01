@@ -1,8 +1,7 @@
-package com.lcaohoanq.Spring_Snake_Game.dto;
+package com.lcaohoanq.Spring_Snake_Game.dto.response;
 
-import lombok.AllArgsConstructor;
+import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter

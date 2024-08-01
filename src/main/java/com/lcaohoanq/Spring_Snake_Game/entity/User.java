@@ -42,74 +42,74 @@ public class User {
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
-    private Long id;
+    protected Long id;
 
     @NotNull //JSR-380 annotation
     @Column(name = "first_name", nullable = false, length = 45)
-    private String firstName;
+    protected String firstName;
 
     @NotNull
     @Column(name = "last_name", nullable = false, length = 45)
-    private String lastName;
+    protected String lastName;
 
     @Email(message = "Email should be valid")
     @Column(name = "email", unique = true)
-    private String email;
+    protected String email;
 
     @Pattern(regexp = "(84|0[3|5|7|8|9])[0-9]{8}", message = "Phone number should be 10 digits, Viet Nam format")
     @Column(name = "phone", unique = true)
-    private String phone;
+    protected String phone;
 
     @NotNull
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", message = "Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character")
     @Column(name = "password", nullable = false)
-    private String password;
+    protected String password;
 
     @NotNull
     @Column(name = "birthday", nullable = false)
-    private String birthday;
+    protected String birthday;
 
     @NotNull
     @Column(name = "address", nullable = false)
-    private String address;
+    protected String address;
 
     @NotNull
     @Column(name = "gender", nullable = false)
-    private UserGenderEnum gender;
+    protected UserGenderEnum gender;
 
     @NotNull
     @Column(name = "role", nullable = false)
-    private UserRoleEnum role;
+    protected UserRoleEnum role;
 
     @NotNull
     @Column(name = "status", nullable = false)
-    private UserStatusEnum status;
+    protected UserStatusEnum status;
 
     @NotNull
     @Column(name = "created_at", nullable = false)
-    private String created_at;
+    protected String created_at;
 
     @NotNull
     @Column(name = "updated_at", nullable = false)
-    private String updated_at;
+    protected String updated_at;
 
     @Lob
     @Column(name = "avatar_url", length = 1000000)
-    private byte[] avatar_url;
+    protected byte[] avatar_url;
 
     @NotNull
     @Column(name = "subscription", nullable = false)
-    private int subscription;
+    protected int subscription;
 
     @OneToOne(mappedBy = "user") // Refers to the user field in Score
     @JsonIgnore
     //what is JsonSetter and JsonGetter
     //https://www.baeldung.com/jackson-jsonmappingexception
-    private Score score;
+    protected Score score;
 
     @Transient
     @JsonIgnore
-    private String confirmPassword;
+    protected String confirmPassword;
 
     public User(String email, String password) {
         this.email = email;

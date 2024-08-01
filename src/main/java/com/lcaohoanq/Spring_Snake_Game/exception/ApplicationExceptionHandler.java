@@ -1,8 +1,8 @@
 package com.lcaohoanq.Spring_Snake_Game.exception;
 
 import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
-import com.lcaohoanq.Spring_Snake_Game.dto.MailResponse;
-import com.lcaohoanq.Spring_Snake_Game.dto.UserResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.response.MailResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.response.UserResponse;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -46,9 +46,14 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(new UserResponse(ex.getMessage(), "error"), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> handleNullPointerException(NullPointerException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
-        return new ResponseEntity<>("Server error", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
