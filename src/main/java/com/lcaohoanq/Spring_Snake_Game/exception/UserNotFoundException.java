@@ -13,7 +13,7 @@ public class UserNotFoundException extends RuntimeException {
     }
 
     public UserNotFoundException(String email_phone) {
-        super("Could not find " + email_phone);
+        super("Could not find user" + email_phone);
         this.email_phone = email_phone;
     }
 

@@ -48,7 +48,7 @@ public class SpringSnakeGameApplication implements CommandLineRunner {
         User user1 = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
             null, pbkdf2.hash("Iloveyou123!".toCharArray()), "1999-07-01",
             "Duong Vo Van Hat, Ho Chi Minh City", UserGenderEnum.MALE,
-            UserRoleEnum.ADMIN, UserStatusEnum.VERIFIED,
+            UserRoleEnum.ADMIN, UserStatusEnum.UNVERIFIED,
             LocalDateTime.now().toString(),
             LocalDateTime.now().toString(), null, 1);
         User user2 = new User(2L, "duong", "nguyen", null,

@@ -1,9 +1,11 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
 import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequest;
+import com.lcaohoanq.Spring_Snake_Game.dto.request.UserUpdatePasswordRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.JwtResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserLoginRequest;
-import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequest;
+import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequestFull;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.UserResponse;
 import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
@@ -21,6 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -89,20 +92,20 @@ public class UserController {
                 // Save the user to the repository
                 User user = new User();
                 user.setId(newUser.getId());
-                user.setFirstName(newUser.getFirstName());
-                user.setLastName(newUser.getLastName());
                 user.setEmail(newUser.getEmail());
                 user.setPhone(newUser.getPhone());
+                user.setFirstName(newUser.getFirstName());
+                user.setLastName(newUser.getLastName());
                 user.setPassword(newUser.getPassword());
-                user.setBirthday(newUser.getBirthday());
                 user.setAddress(newUser.getAddress());
+                user.setBirthday(newUser.getBirthday());
                 user.setGender(newUser.getGender());
                 user.setRole(newUser.getRole());
                 user.setStatus(newUser.getStatus());
                 user.setCreated_at(newUser.getCreated_at());
                 user.setUpdated_at(newUser.getUpdated_at());
                 user.setAvatar_url(newUser.getAvatar_url());
-                user.setSubscription(newUser.getSubscription());
+//                user.setSubscription(newUser.getSubscription());
 
                 System.out.println("Data: " + user);
 
@@ -185,6 +188,46 @@ public class UserController {
                 newUser.setId(id);
                 return userRepository.save(newUser);
             });
+    }
+
+    //udpate the password of user
+    @PatchMapping("/users/updatePassword")
+    public ResponseEntity<UserResponse> updatePassword(@RequestBody UserUpdatePasswordRequest user) {
+        User userFound = null;
+        if (user.getEmail().contains("@")) {
+            userFound = userRepository.findAll().stream()
+                .filter(u -> u.getEmail().equals(user.getEmail()))
+                .findFirst()
+                .orElse(null);
+
+            if (userFound == null) {
+                log.error("Email not found: {}", user.getEmail());
+                return new ResponseEntity<>(new UserResponse("Email not found"),
+                    HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            userFound = userRepository.findAll().stream()
+                .filter(u -> u.getPhone().equals(user.getEmail()))
+                .findFirst()
+                .orElse(null);
+
+            if (userFound == null) {
+                log.error("Phone number not found: {}", user.getEmail());
+                return new ResponseEntity<>(new UserResponse("Phone number not found"),
+                    HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        // Hash the password before saving the user
+        user.setNewPassword(new PBKDF2().hash(user.getNewPassword().toCharArray()));
+        log.info("Updating password for user: {}", user.getEmail());
+
+        // Save the user to the repository
+        userFound.setPassword(user.getNewPassword());
+        userRepository.save(userFound);
+
+        return new ResponseEntity<>(new UserResponse("Update password successfully"),
+            HttpStatus.OK);
     }
 
 }

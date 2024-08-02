@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MailResponse extends AbstractResponse {
 
-    private String otp;
+    protected String otp;
 
     public MailResponse(String message, String status) {
         super(message, status);

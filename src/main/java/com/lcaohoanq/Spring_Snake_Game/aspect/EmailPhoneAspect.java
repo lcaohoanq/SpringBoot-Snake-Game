@@ -44,4 +44,21 @@ public class EmailPhoneAspect {
         request.setAttribute("validatedPhone", user);
     }
 
+    // Combined pointcut for both UserController and ForgotPasswordController
+    @Before("execution(* com.lcaohoanq.Spring_Snake_Game.controller.UserController.*(..)) && args(email_phone,..) || execution(* com.lcaohoanq.Spring_Snake_Game.controller.ForgotPasswordController.*(..)) && args(email_phone,..)")
+    public void checkIfAccountExists(JoinPoint joinPoint, String email_phone) {
+        checkAccount(email_phone);
+    }
+
+    private void checkAccount(String email_phone) {
+        User user = userRepository.findByEmail(email_phone);
+        if(user == null){
+            throw new UserNotFoundException(email_phone);
+        }
+        if (user.getStatus() == UserStatusEnum.BANNED) {
+            throw new UserHasBeenBannedException(email_phone);
+        }
+        request.setAttribute("validatedAccount", user);
+    }
+
 }

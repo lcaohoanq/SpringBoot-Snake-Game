@@ -1,6 +1,8 @@
 package com.lcaohoanq.Spring_Snake_Game.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
@@ -35,6 +37,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @JsonPropertyOrder({"id", "firstName", "lastName", "email", "phone", "password", "birthday",
     "address", "gender", "role", "status", "created_at", "updated_at", "avatar_url",
     "subscription"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "users")
 public class User {
 
@@ -42,63 +45,78 @@ public class User {
     @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
+    @JsonProperty("id")
     protected Long id;
 
     @NotNull //JSR-380 annotation
     @Column(name = "first_name", nullable = false, length = 45)
+    @JsonProperty("firstName")
     protected String firstName;
 
     @NotNull
     @Column(name = "last_name", nullable = false, length = 45)
+    @JsonProperty("lastName")
     protected String lastName;
 
     @Email(message = "Email should be valid")
     @Column(name = "email", unique = true)
+    @JsonProperty("email")
     protected String email;
 
     @Pattern(regexp = "(84|0[3|5|7|8|9])[0-9]{8}", message = "Phone number should be 10 digits, Viet Nam format")
     @Column(name = "phone", unique = true)
+    @JsonProperty("phone")
     protected String phone;
 
     @NotNull
     @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", message = "Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character")
     @Column(name = "password", nullable = false)
+    @JsonProperty("password")
     protected String password;
 
     @NotNull
     @Column(name = "birthday", nullable = false)
+    @JsonProperty("birthday")
     protected String birthday;
 
     @NotNull
     @Column(name = "address", nullable = false)
+    @JsonProperty("address")
     protected String address;
 
     @NotNull
     @Column(name = "gender", nullable = false)
+    @JsonProperty("gender")
     protected UserGenderEnum gender;
 
     @NotNull
     @Column(name = "role", nullable = false)
+    @JsonProperty("role")
     protected UserRoleEnum role;
 
     @NotNull
     @Column(name = "status", nullable = false)
+    @JsonProperty("status")
     protected UserStatusEnum status;
 
     @NotNull
     @Column(name = "created_at", nullable = false)
+    @JsonProperty("created_at")
     protected String created_at;
 
     @NotNull
     @Column(name = "updated_at", nullable = false)
+    @JsonProperty("updated_at")
     protected String updated_at;
 
     @Lob
     @Column(name = "avatar_url", length = 1000000)
+    @JsonProperty("avatar_url")
     protected byte[] avatar_url;
 
     @NotNull
     @Column(name = "subscription", nullable = false)
+    @JsonProperty("subscription")
     protected int subscription;
 
     @OneToOne(mappedBy = "user") // Refers to the user field in Score
@@ -111,9 +129,27 @@ public class User {
     @JsonIgnore
     protected String confirmPassword;
 
-    public User(String email, String password) {
-        this.email = email;
+    public User(String email_phone, String password) {
+        this.email = email_phone;
         this.password = password;
+    }
+
+    // register by frontend
+    public User(String email_phone, String firstName, String lastName, String password,
+        String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
+        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url) {
+        this.email = email_phone;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.birthday = birthday;
+        this.address = address;
+        this.gender = gender;
+        this.role = role;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar_url = avatar_url;
     }
 
     public User(Long id, String firstName, String lastName, String email, String phone,
