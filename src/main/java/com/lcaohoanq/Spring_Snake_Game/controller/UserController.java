@@ -12,6 +12,7 @@ import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
+import com.lcaohoanq.Spring_Snake_Game.util.ValidateUtils;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -190,43 +191,26 @@ public class UserController {
             });
     }
 
-    //udpate the password of user
-    @PatchMapping("/users/updatePassword")
+    //update user password
+    @PostMapping("/users/updatePassword")
     public ResponseEntity<UserResponse> updatePassword(@RequestBody UserUpdatePasswordRequest user) {
-        User userFound = null;
-        if (user.getEmail().contains("@")) {
-            userFound = userRepository.findAll().stream()
-                .filter(u -> u.getEmail().equals(user.getEmail()))
-                .findFirst()
-                .orElse(null);
+        User data;
 
-            if (userFound == null) {
-                log.error("Email not found: {}", user.getEmail());
-                return new ResponseEntity<>(new UserResponse("Email not found"),
-                    HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            userFound = userRepository.findAll().stream()
-                .filter(u -> u.getPhone().equals(user.getEmail()))
-                .findFirst()
-                .orElse(null);
-
-            if (userFound == null) {
-                log.error("Phone number not found: {}", user.getEmail());
-                return new ResponseEntity<>(new UserResponse("Phone number not found"),
-                    HttpStatus.BAD_REQUEST);
-            }
+        if(ValidateUtils.checkTypeAccount(user.getIdentifier())){
+            data = userRepository.findByEmail(user.getIdentifier());
+        }else{
+            data = userRepository.findByPhone(user.getIdentifier());
         }
 
-        // Hash the password before saving the user
-        user.setNewPassword(new PBKDF2().hash(user.getNewPassword().toCharArray()));
-        log.info("Updating password for user: {}", user.getEmail());
+        if(data == null){
+            return new ResponseEntity<>(new UserResponse("User not found"),
+                HttpStatus.BAD_REQUEST);
+        }
 
-        // Save the user to the repository
-        userFound.setPassword(user.getNewPassword());
-        userRepository.save(userFound);
+        data.setPassword(user.getNewPassword());
+        userRepository.save(data);
 
-        return new ResponseEntity<>(new UserResponse("Update password successfully"),
+        return new ResponseEntity<>(new UserResponse("Password updated successfully"),
             HttpStatus.OK);
     }
 

@@ -10,7 +10,7 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>com.lcaohoanq</groupId>
-  <artifactId>Spring-Snake-Game</artifactId>
+  <artifactId>SpringBôt-Snake-Game</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Spring-Snake-Game</name>
   <description>Backend for Snake-Game</description>
