@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/46cde35d-9aa7-4abb-ab31-3a06c6bb21b5)
+
 - Before start the project, ensure run the below command to establish the database connection
 ```bash
 docker-compose up
