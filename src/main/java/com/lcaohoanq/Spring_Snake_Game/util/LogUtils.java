@@ -36,9 +36,6 @@ public class LogUtils {
         log.info("New user registered at: {}", atTimeRequest);
     }
 
-    public static void showLogErrorWhenRegisterNewUser(String atTimeRequest, String reason){
-        log.error("An error occurred while creating a new user at: {}\nReason: {}", atTimeRequest, reason);
-    }
 
     public static void showLogNotFoundUser(String typeAccount, String accountIdentifier){
         log.error("{} not found: {}", typeAccount, accountIdentifier);
@@ -48,4 +45,15 @@ public class LogUtils {
         log.info("Login successfully at: {}", atTimeRequest);
     }
 
+    public static void showLogErrorWhenRegisterNewUser(String atTimeRequest, String reason){
+        log.error("An error occurred while creating a new user at: {}\nReason: {}", atTimeRequest, reason);
+    }
+
+    public static void showLogTimeOutException(String atTimeRequest){
+        log.error("Time out exception at: {}", atTimeRequest);
+    }
+
+    public static void showLogInternalServerException(String atTimeRequest){
+        log.error("Internal server exception at: {}", atTimeRequest);
+    }
 }

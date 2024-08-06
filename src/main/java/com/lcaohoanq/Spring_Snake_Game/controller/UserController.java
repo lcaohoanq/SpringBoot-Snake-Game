@@ -5,7 +5,6 @@ import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserUpdatePasswordRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.JwtResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserLoginRequest;
-import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequestFull;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.UserResponse;
 import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
@@ -14,10 +13,13 @@ import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.util.LogUtils;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidateUtils;
+import com.mysql.cj.log.Log;
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -181,40 +182,53 @@ public class UserController {
     }
 
     @PostMapping("/users/login")
-    ResponseEntity<AbstractResponse> login(@Valid @RequestBody UserLoginRequest user,
+    @Async
+    public CompletableFuture<ResponseEntity<? extends AbstractResponse>> login(@Valid @RequestBody UserLoginRequest user,
         BindingResult bindingResult) {
-        User userFound;
+        return CompletableFuture.supplyAsync(() -> {
+            User userFound;
 
-        if (bindingResult.hasErrors()) {
-            LogUtils.showLogValidationFailed(LocalDateTime.now().toString());
-            throw new MethodArgumentNotValidException(bindingResult);
-        }
+            if (bindingResult.hasErrors()) {
+                LogUtils.showLogValidationFailed(LocalDateTime.now().toString());
+                throw new MethodArgumentNotValidException(bindingResult);
+            }
 
-        // Check email or phone
-        String emailOrPhone = user.getEmail_phone();
-        boolean isEmail = ValidateUtils.checkTypeAccount(emailOrPhone);
+            // Check email or phone
+            String emailOrPhone = user.getEmail_phone();
+            boolean isEmail = ValidateUtils.checkTypeAccount(emailOrPhone);
 
-        userFound = isEmail ? userRepository.findByEmail(emailOrPhone) : userRepository.findByPhone(emailOrPhone);
+            userFound = isEmail ? userRepository.findByEmail(emailOrPhone) : userRepository.findByPhone(emailOrPhone);
 
-        if (userFound == null) {
-            String notFoundMessage = isEmail ? "Email not found: " : "Phone number not found: ";
-            log.error("{}{}", notFoundMessage, emailOrPhone);
-            String responseMessage = isEmail ? "Email not found" : "Phone number not found";
-            return new ResponseEntity<>(new UserResponse(responseMessage), HttpStatus.BAD_REQUEST);
-        }
+            if (userFound == null) {
+                String notFoundMessage = isEmail ? "Email not found: " : "Phone number not found: ";
+                log.error("{}{}", notFoundMessage, emailOrPhone);
+                String responseMessage = isEmail ? "Email not found" : "Phone number not found";
+                return new ResponseEntity<>(new UserResponse(responseMessage), HttpStatus.BAD_REQUEST);
+            }
 
-        if (!ValidateUtils.authenticate(user.getPassword(), userFound.getPassword())) {
-            log.error("Password wrong: {}", user.getEmail_phone());
-            return new ResponseEntity<>(new UserResponse("Password wrong"),
-                HttpStatus.BAD_REQUEST);
-        }
+            if (!ValidateUtils.authenticate(user.getPassword(), userFound.getPassword())) {
+                log.error("Password wrong: {}", user.getEmail_phone());
+                return new ResponseEntity<>(new UserResponse("Password wrong"),
+                    HttpStatus.BAD_REQUEST);
+            }
 
-        LogUtils.showLogLoginSuccess(LocalDateTime.now().toString());
+            LogUtils.showLogLoginSuccess(LocalDateTime.now().toString());
 
-        // Generate tokens
-        JwtResponse jwtResponse = new JwtResponse("accessToken", "refreshToken");
+            // Generate tokens
+            JwtResponse jwtResponse = new JwtResponse("accessToken", "refreshToken");
 
-        return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+            return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+        }).orTimeout(10, TimeUnit.SECONDS).exceptionally(ex -> {
+            if(ex instanceof TimeoutException){
+                LogUtils.showLogTimeOutException(LocalDateTime.now().toString());
+                return new ResponseEntity<>(new UserResponse("TimeoutException"),
+                    HttpStatus.REQUEST_TIMEOUT);
+            } else {
+                LogUtils.showLogInternalServerException(LocalDateTime.now().toString());
+                return new ResponseEntity<>(new UserResponse(ex.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        });
     }
 
 
