@@ -52,6 +52,58 @@ public class UserController {
             .orElseThrow(() -> new UserNotFoundException(id));
     }
 
+    @PostMapping("/users/oauth2/callback/google")
+    @Async
+    public CompletableFuture<ResponseEntity<UserResponse>> createNewAccountGoogle(
+        @Valid @RequestBody UserRegisterRequest newUser, BindingResult bindingResult) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                if (bindingResult.hasErrors()) {
+                    log.error("Validation failed for user at: {}", newUser.getCreated_at());
+                    throw new MethodArgumentNotValidException(bindingResult);
+                }
+
+                if ((newUser.getEmail() == null || newUser.getEmail().isEmpty())) {
+                    throw new IllegalArgumentException("Must provide email when login with Google");
+                } else {
+                    boolean emailExists = userRepository.findAll().stream()
+                        .anyMatch(user -> newUser.getEmail().equals(user.getEmail()));
+                    if (emailExists) {
+                        log.error("Email already Login with Google: {}", newUser.getEmail());
+                        return new ResponseEntity<>(new UserResponse("Login Google successfully"),
+                            HttpStatus.OK);
+                    }
+                }
+
+                // Save the user to the repository
+                User user = new User();
+                user.setId(newUser.getId());
+                user.setEmail(newUser.getEmail());
+                user.setPhone(newUser.getPhone());
+                user.setFirstName(newUser.getFirstName());
+                user.setLastName(newUser.getLastName());
+                user.setPassword(newUser.getPassword());
+                user.setAddress(newUser.getAddress());
+                user.setBirthday(newUser.getBirthday());
+                user.setGender(newUser.getGender());
+                user.setRole(newUser.getRole());
+                user.setStatus(newUser.getStatus());
+                user.setCreated_at(newUser.getCreated_at());
+                user.setUpdated_at(newUser.getUpdated_at());
+                user.setAvatar_url(newUser.getAvatar_url());
+//                user.setSubscription(newUser.getSubscription());
+
+                userRepository.save(user);
+                return new ResponseEntity<>(new UserResponse("Login Google successfully"),
+                    HttpStatus.OK);
+            }  catch(Exception e){
+                log.error("An error occurred while creating a new user: {}", e.getMessage());
+                return new ResponseEntity<>(new UserResponse(e.getMessage()),
+                    HttpStatus.BAD_REQUEST);
+            }
+        });
+    }
+
     @PostMapping("/users/register")
     @Async
     public CompletableFuture<ResponseEntity<UserResponse>> createNew(

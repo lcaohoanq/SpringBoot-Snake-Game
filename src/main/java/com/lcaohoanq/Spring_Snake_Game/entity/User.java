@@ -81,7 +81,8 @@ public class User {
     @JsonProperty("birthday")
     protected String birthday;
 
-    @NotNull
+    //@NotNull, the address will be null if the user does not provide it
+    //we can update later
     @Column(name = "address", nullable = false)
     @JsonProperty("address")
     protected String address;
@@ -236,7 +237,7 @@ public class User {
 
     public static void main(String[] args) {
         User user = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
-            "0987654321", "", null,
+            null, "", null,
             "Ho Chi Minh", UserGenderEnum.MALE, UserRoleEnum.USER, UserStatusEnum.VERIFIED,
             LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
         try {
