@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -115,28 +116,30 @@ public class UserController {
                     throw new MethodArgumentNotValidException(bindingResult);
                 }
 
-                if ((newUser.getEmail() == null || newUser.getEmail().isEmpty()) &&
-                    (newUser.getPhone() == null || newUser.getPhone().isEmpty())) {
+                if (StringUtils .isBlank(newUser.getEmail()) && StringUtils.isBlank(newUser.getPhone())) {
                     throw new IllegalArgumentException("Either email or phone must be provided.");
-                } else if (newUser.getEmail() != null) {
-                    boolean emailExists = userRepository.findAll().stream()
-                        .anyMatch(user -> newUser.getEmail().equals(user.getEmail()));
-                    if (emailExists) {
-                        log.error("Email already registered: {}", newUser.getEmail());
-                        return new ResponseEntity<>(new UserResponse("Email already registered"),
-                            HttpStatus.BAD_REQUEST);
-                    }
                 } else {
-                    boolean phoneExists = userRepository.findAll().stream()
-                        .anyMatch(user -> newUser.getPhone().equals(user.getPhone()));
+                    boolean emailExists = false;
+                    boolean phoneExists = false;
 
+                    // Assuming userRepository has methods to find by email and phone
+                    if (StringUtils.isNotBlank(newUser.getEmail())) {
+                        emailExists = userRepository.findByEmail(newUser.getEmail()) != null;
+                    }
+                    if (StringUtils.isNotBlank(newUser.getPhone())) {
+                        phoneExists = userRepository.findByPhone(newUser.getPhone()) != null;
+                    }
+
+                    if (emailExists) {
+                        log.error("Email already exists: {}", newUser.getEmail());
+                        return new ResponseEntity<>(new UserResponse("Email already exists"), HttpStatus.BAD_REQUEST);
+                    }
                     if (phoneExists) {
-                        log.error("Phone number already registered: {}", newUser.getPhone());
-                        return new ResponseEntity<>(
-                            new UserResponse("Phone number already registered"),
-                            HttpStatus.BAD_REQUEST);
+                        log.error("Phone number already exists: {}", newUser.getPhone());
+                        return new ResponseEntity<>(new UserResponse("Phone number already exists"), HttpStatus.BAD_REQUEST);
                     }
                 }
+
 
                 // Hash the password before saving the user
                 newUser.setPassword(new PBKDF2().hash(newUser.getPassword().toCharArray()));
@@ -177,41 +180,29 @@ public class UserController {
     @PostMapping("/users/login")
     ResponseEntity<AbstractResponse> login(@Valid @RequestBody UserLoginRequest user,
         BindingResult bindingResult) {
-        User userFound = null;
-        PBKDF2 pbkdf2 = new PBKDF2();
+        User userFound;
+
         if (bindingResult.hasErrors()) {
             log.error("Validation failed for user when login");
             throw new MethodArgumentNotValidException(bindingResult);
         }
 
         // Check email or phone
-        if (user.getEmail_phone().contains("@")) {
-            userFound = userRepository.findAll().stream()
-                .filter(u -> u.getEmail().equals(user.getEmail_phone()))
-                .findFirst()
-                .orElse(null);
+        String emailOrPhone = user.getEmail_phone();
+        boolean isEmail = ValidateUtils.checkTypeAccount(emailOrPhone);
 
-            if (userFound == null) {
-                log.error("Email not found: {}", user.getEmail_phone());
-                return new ResponseEntity<>(new UserResponse("Email not found"),
-                    HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            userFound = userRepository.findAll().stream()
-                .filter(u -> u.getPhone().equals(user.getEmail_phone()))
-                .findFirst()
-                .orElse(null);
+        userFound = isEmail ? userRepository.findByEmail(emailOrPhone) : userRepository.findByPhone(emailOrPhone);
 
-            if (userFound == null) {
-                log.error("Phone number not found: {}", user.getEmail_phone());
-                return new ResponseEntity<>(new UserResponse("Phone number not found"),
-                    HttpStatus.BAD_REQUEST);
-            }
+        if (userFound == null) {
+            String notFoundMessage = isEmail ? "Email not found: " : "Phone number not found: ";
+            log.error("{}{}", notFoundMessage, emailOrPhone);
+            String responseMessage = isEmail ? "Email not found" : "Phone number not found";
+            return new ResponseEntity<>(new UserResponse(responseMessage), HttpStatus.BAD_REQUEST);
         }
 
-        if (!pbkdf2.authenticate(user.getPassword().toCharArray(), userFound.getPassword())) {
-            log.error("Password not match: {}", user.getEmail_phone());
-            return new ResponseEntity<>(new UserResponse("Password not match"),
+        if (!ValidateUtils.authenticate(user.getPassword(), userFound.getPassword())) {
+            log.error("Password wrong: {}", user.getEmail_phone());
+            return new ResponseEntity<>(new UserResponse("Password wrong"),
                 HttpStatus.BAD_REQUEST);
         }
 

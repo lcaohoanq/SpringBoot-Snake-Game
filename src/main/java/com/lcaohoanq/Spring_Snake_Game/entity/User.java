@@ -27,6 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -35,6 +36,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString(exclude = "score")
 @JsonPropertyOrder({"id", "firstName", "lastName", "email", "phone", "password", "birthday",
     "address", "gender", "role", "status", "created_at", "updated_at", "avatar_url",
     "subscription"})
@@ -217,22 +219,6 @@ public class User {
         this.avatar_url = avatar_url;
         this.subscription = subscription;
         this.score = score;
-    }
-
-    //login with Google constructor
-    public User( String firstName, String lastName, String email, String password, UserStatusEnum status,
-        String avatar_url) {
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.status = status;
-        avatar_url = avatar_url;
-    }
-
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
     public static void main(String[] args) {
