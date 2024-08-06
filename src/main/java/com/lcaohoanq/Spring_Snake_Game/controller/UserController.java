@@ -11,9 +11,11 @@ import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
+import com.lcaohoanq.Spring_Snake_Game.util.LogUtils;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidateUtils;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
@@ -112,11 +114,11 @@ public class UserController {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (bindingResult.hasErrors()) {
-                    log.error("Validation failed for user at: {}", newUser.getCreated_at());
+                    LogUtils.showLogValidationFailed(newUser.getCreated_at());
                     throw new MethodArgumentNotValidException(bindingResult);
                 }
 
-                if (StringUtils .isBlank(newUser.getEmail()) && StringUtils.isBlank(newUser.getPhone())) {
+                if (StringUtils.isBlank(newUser.getEmail()) && StringUtils.isBlank(newUser.getPhone())) {
                     throw new IllegalArgumentException("Either email or phone must be provided.");
                 } else {
                     boolean emailExists = false;
@@ -131,11 +133,11 @@ public class UserController {
                     }
 
                     if (emailExists) {
-                        log.error("Email already exists: {}", newUser.getEmail());
+                        LogUtils.showLogExistedUser("Email", newUser.getEmail());
                         return new ResponseEntity<>(new UserResponse("Email already exists"), HttpStatus.BAD_REQUEST);
                     }
                     if (phoneExists) {
-                        log.error("Phone number already exists: {}", newUser.getPhone());
+                        LogUtils.showLogExistedUser("Phone number", newUser.getPhone());
                         return new ResponseEntity<>(new UserResponse("Phone number already exists"), HttpStatus.BAD_REQUEST);
                     }
                 }
@@ -143,7 +145,6 @@ public class UserController {
 
                 // Hash the password before saving the user
                 newUser.setPassword(new PBKDF2().hash(newUser.getPassword().toCharArray()));
-                log.info("Creating new user at: {}", newUser.getCreated_at());
 
                 // Save the user to the repository
                 User user = new User();
@@ -167,10 +168,12 @@ public class UserController {
 
                 userRepository.save(user);
 
+                LogUtils.showLogNewUserRegistered(newUser.getCreated_at());
+
                 return new ResponseEntity<>(new UserResponse("Register successfully"),
                     HttpStatus.OK);
             }  catch(Exception e){
-                log.error("An error occurred while creating a new user: {}", e.getMessage());
+                LogUtils.showLogErrorWhenRegisterNewUser(newUser.getCreated_at(), e.getMessage());
                 return new ResponseEntity<>(new UserResponse(e.getMessage()),
                     HttpStatus.BAD_REQUEST);
             }
@@ -183,7 +186,7 @@ public class UserController {
         User userFound;
 
         if (bindingResult.hasErrors()) {
-            log.error("Validation failed for user when login");
+            LogUtils.showLogValidationFailed(LocalDateTime.now().toString());
             throw new MethodArgumentNotValidException(bindingResult);
         }
 
@@ -206,7 +209,7 @@ public class UserController {
                 HttpStatus.BAD_REQUEST);
         }
 
-        log.info("Login successfully: {}", user.getEmail_phone());
+        LogUtils.showLogLoginSuccess(LocalDateTime.now().toString());
 
         // Generate tokens
         JwtResponse jwtResponse = new JwtResponse("accessToken", "refreshToken");
