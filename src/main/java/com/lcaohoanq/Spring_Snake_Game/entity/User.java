@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.lcaohoanq.Spring_Snake_Game.constraint.PasswordConstraint;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
@@ -69,12 +70,13 @@ public class User {
     protected String phone;
 
     @NotNull
-    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", message = "Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character")
     @Column(name = "password", nullable = false)
     @JsonProperty("password")
+    @PasswordConstraint
     protected String password;
 
-    @NotNull
+    //@NotNull, the birthday will be null if the user does not provide it
+    //we can update later
     @Column(name = "birthday", nullable = false)
     @JsonProperty("birthday")
     protected String birthday;
@@ -216,6 +218,17 @@ public class User {
         this.score = score;
     }
 
+    //login with Google constructor
+    public User( String firstName, String lastName, String email, String password, UserStatusEnum status,
+        String avatar_url) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.status = status;
+        avatar_url = avatar_url;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
@@ -223,7 +236,7 @@ public class User {
 
     public static void main(String[] args) {
         User user = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
-            "0987654321", new PBKDF2().hash("Iloveyou123!".toCharArray()), "1999-07-01",
+            "0987654321", "", null,
             "Ho Chi Minh", UserGenderEnum.MALE, UserRoleEnum.USER, UserStatusEnum.VERIFIED,
             LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
         try {
