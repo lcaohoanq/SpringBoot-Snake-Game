@@ -10,6 +10,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import java.time.LocalDateTime;
 
+@Deprecated
 public class DemoEntity {
 
     public static void main(String[] args) {

@@ -1,5 +1,7 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
+import com.github.luben.zstd.Zstd;
+import com.lcaohoanq.Spring_Snake_Game.constant.ResourcesPath;
 import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserUpdatePasswordRequest;
@@ -10,11 +12,15 @@ import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
+import com.lcaohoanq.Spring_Snake_Game.util.ImageCompression;
 import com.lcaohoanq.Spring_Snake_Game.util.LogUtils;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidateUtils;
 import com.mysql.cj.log.Log;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -146,6 +152,7 @@ public class UserController {
 
                 // Hash the password before saving the user
                 newUser.setPassword(new PBKDF2().hash(newUser.getPassword().toCharArray()));
+                newUser.setAvatar_url(ImageCompression.compressImage(ResourcesPath.AVATAR_ANONYMOUS));
 
                 // Save the user to the repository
                 User user = new User();
