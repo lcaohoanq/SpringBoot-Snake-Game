@@ -4,18 +4,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.lcaohoanq.Spring_Snake_Game.constraint.PasswordConstraint;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
-import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
+import com.lcaohoanq.Spring_Snake_Game.util.MyJsonDeserializer;
+import com.lcaohoanq.Spring_Snake_Game.util.MyJsonSerializer;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidatorUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -28,15 +34,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@ToString(exclude = "score")
+@ToString(callSuper = true, exclude = {"score"})
 @JsonPropertyOrder({"id", "firstName", "lastName", "email", "phone", "password", "birthday",
     "address", "gender", "role", "status", "created_at", "updated_at", "avatar_url",
     "subscription"})
@@ -90,19 +94,28 @@ public class User {
     protected String address;
 
     @NotNull
-    @Column(name = "gender", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "gender_id", nullable = false)
+    @JsonSerialize(using = MyJsonSerializer.GenderSerializer.class)
+    @JsonDeserialize(using = MyJsonDeserializer.GenderDeserializer.class)
     @JsonProperty("gender")
-    protected UserGenderEnum gender;
+    protected Gender gender;
 
     @NotNull
-    @Column(name = "role", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    @JsonSerialize(using = MyJsonSerializer.RoleSerializer.class)
+    @JsonDeserialize(using = MyJsonDeserializer.RoleDeserializer.class)
     @JsonProperty("role")
-    protected UserRoleEnum role;
+    protected Role role;
 
     @NotNull
-    @Column(name = "status", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "status_id", nullable = false)
+    @JsonSerialize(using = MyJsonSerializer.StatusSerializer.class)
+    @JsonDeserialize(using = MyJsonDeserializer.StatusDeserializer.class)
     @JsonProperty("status")
-    protected UserStatusEnum status;
+    protected Status status;
 
     @NotNull
     @Column(name = "created_at", nullable = false)
@@ -141,8 +154,8 @@ public class User {
 
     // register by frontend
     public User(String email_phone, String firstName, String lastName, String password,
-        String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
-        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url) {
+        String birthday, String address, Gender gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url) {
         this.email = email_phone;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -158,8 +171,8 @@ public class User {
     }
 
     public User(Long id, String firstName, String lastName, String email, String phone,
-        String password, String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
-        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        String password, String birthday, String address, Gender gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url,
         int subscription) {
         this.id = id;
         this.firstName = firstName;
@@ -179,8 +192,8 @@ public class User {
     }
 
     public User(String firstName, String lastName, String email, String phone, String password,
-        String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
-        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        String birthday, String address, Gender gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url,
         int subscription) {
         this.id = -1L;
         this.firstName = firstName;
@@ -200,8 +213,8 @@ public class User {
     }
 
     public User(Long id, String firstName, String lastName, String email, String phone,
-        String password, String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
-        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        String password, String birthday, String address, Gender gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url,
         int subscription, Score score) {
         this.id = id;
         this.firstName = firstName;
@@ -222,14 +235,27 @@ public class User {
     }
 
     public static void main(String[] args) {
+        Role role = new Role(1, UserRoleEnum.USER);
+        Gender gender = new Gender(1, UserGenderEnum.MALE);
+        Status status = new Status(1, UserStatusEnum.VERIFIED);
+//        role.setRoleName(UserRoleEnum.USER);
         User user = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
             null, "", null,
-            "Ho Chi Minh", UserGenderEnum.MALE, UserRoleEnum.USER, UserStatusEnum.VERIFIED,
+            "Ho Chi Minh", gender, role, status,
             LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
+
+        User user2 = new User(2L, "hoang", "luu", null,
+            "0934162561", "", null,
+            "Ho Chi Minh", gender, role, status,
+            LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
+
+        role.getUsers().add(user);
+        role.getUsers().add(user2);
         try {
             ValidatorUtil.validate(user);
             System.out.println("User is valid");
             System.out.println(user);
+
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         }

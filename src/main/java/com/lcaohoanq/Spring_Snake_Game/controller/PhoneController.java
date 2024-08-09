@@ -20,7 +20,7 @@ public class PhoneController {
 
         User user = (User) request.getAttribute("validatedPhone");
 
-        if(user.getStatus() == UserStatusEnum.VERIFIED){
+        if(user.getStatus().getId() == UserStatusEnum.VERIFIED.getStatus()){
             return new ResponseEntity<>(new PhoneResponse("Phone number already verified", "error"), HttpStatus.BAD_REQUEST);
         }
 

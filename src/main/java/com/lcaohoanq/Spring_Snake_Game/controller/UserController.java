@@ -8,9 +8,16 @@ import com.lcaohoanq.Spring_Snake_Game.dto.request.UserUpdatePasswordRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.JwtResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserLoginRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.UserResponse;
+import com.lcaohoanq.Spring_Snake_Game.entity.Gender;
+import com.lcaohoanq.Spring_Snake_Game.entity.Role;
+import com.lcaohoanq.Spring_Snake_Game.entity.Status;
+import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
 import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.repository.GenderRepository;
+import com.lcaohoanq.Spring_Snake_Game.repository.RoleRepository;
+import com.lcaohoanq.Spring_Snake_Game.repository.StatusRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.util.ImageCompression;
 import com.lcaohoanq.Spring_Snake_Game.util.LogUtils;
@@ -23,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -49,6 +57,12 @@ public class UserController {
     private UserRepository userRepository;
 
     private PBKDF2 pbkdf2;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private GenderRepository genderRepository;
+    @Autowired
+    private StatusRepository statusRepository;
 
     @GetMapping("/users")
     List<User> all() {
@@ -84,7 +98,6 @@ public class UserController {
                             HttpStatus.OK);
                     }
                 }
-
                 // Save the user to the repository
                 User user = new User();
                 user.setId(newUser.getId());
@@ -148,6 +161,24 @@ public class UserController {
                         return new ResponseEntity<>(new UserResponse("Phone number already exists"), HttpStatus.BAD_REQUEST);
                     }
                 }
+                Role role;
+                Gender gender;
+                Status status;
+                role = roleRepository.findByRoleName(newUser.getRole().getRoleName());
+                if(role == null) {
+                    return new ResponseEntity<>(new UserResponse("Invalid role"),
+                        HttpStatus.BAD_REQUEST);
+                }
+
+                gender = genderRepository.findByGenderName(newUser.getGender().getGenderName());
+                if(gender == null){
+                    return new ResponseEntity<>(new UserResponse("Invalid gender"), HttpStatus.BAD_REQUEST);
+                }
+
+                status = statusRepository.findByStatusName(newUser.getStatus().getStatusName());
+                if(status == null){
+                    return new ResponseEntity<>(new UserResponse("Invalid status"), HttpStatus.BAD_REQUEST);
+                }
 
 
                 // Hash the password before saving the user
@@ -164,9 +195,9 @@ public class UserController {
                 user.setPassword(newUser.getPassword());
                 user.setAddress(newUser.getAddress());
                 user.setBirthday(newUser.getBirthday());
-                user.setGender(newUser.getGender());
-                user.setRole(newUser.getRole());
-                user.setStatus(newUser.getStatus());
+                user.setGender(gender);
+                user.setRole(role);
+                user.setStatus(status);
                 user.setCreated_at(newUser.getCreated_at());
                 user.setUpdated_at(newUser.getUpdated_at());
                 user.setAvatar_url(newUser.getAvatar_url());

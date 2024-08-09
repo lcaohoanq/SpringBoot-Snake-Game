@@ -7,10 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserGenderEnum {
 
-    MALE("M"),
-    FEMALE("F"),
-    OTHER("O"),
-    NOT_PROVIDE("N");
+    MALE(1),
+    FEMALE(2),
+    OTHER(3),
+    NOT_PROVIDE(4);
 
-    private final String gender;
+    private final int gender;
 }

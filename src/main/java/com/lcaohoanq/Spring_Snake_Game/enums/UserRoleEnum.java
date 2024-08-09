@@ -7,11 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum UserRoleEnum {
 
-    USER(0),
-    USER_GOLD(1),
-    USER_PREMIUM(2),
-    EMPLOYEE(3),
-    ADMIN(4);
+    USER(1),
+    USER_GOLD(2),
+    USER_PREMIUM(3),
+    EMPLOYEE(4),
+    ADMIN(5);
 
     private final int role;
 

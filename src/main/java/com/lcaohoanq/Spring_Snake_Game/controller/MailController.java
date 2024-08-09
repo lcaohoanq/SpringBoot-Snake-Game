@@ -30,7 +30,7 @@ public class MailController {
     public ResponseEntity<MailResponse> sendOtp(@RequestParam String toEmail) {
         User user = (User) request.getAttribute("validatedEmail");
 
-        if(user.getStatus() == UserStatusEnum.VERIFIED){
+        if(user.getStatus().getId() == UserStatusEnum.VERIFIED.getStatus()){
             return new ResponseEntity<>(new MailResponse("Email already verified", "error"), HttpStatus.BAD_REQUEST);
         }
 
