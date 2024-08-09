@@ -172,8 +172,6 @@ public class UserController {
                 user.setAvatar_url(newUser.getAvatar_url());
 //                user.setSubscription(newUser.getSubscription());
 
-                System.out.println("Data: " + user);
-
                 userRepository.save(user);
 
                 LogUtils.showLogNewUserRegistered(newUser.getCreated_at());

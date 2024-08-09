@@ -8,14 +8,16 @@ import com.lcaohoanq.Spring_Snake_Game.constraint.PasswordConstraint;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
-import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidatorUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -28,15 +30,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@ToString(exclude = "score")
+@ToString(callSuper = true, exclude = {"score", "role", "status"})
 @JsonPropertyOrder({"id", "firstName", "lastName", "email", "phone", "password", "birthday",
     "address", "gender", "role", "status", "created_at", "updated_at", "avatar_url",
     "subscription"})
@@ -95,14 +95,16 @@ public class User {
     protected UserGenderEnum gender;
 
     @NotNull
-    @Column(name = "role", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
     @JsonProperty("role")
-    protected UserRoleEnum role;
+    protected Role role;
 
     @NotNull
-    @Column(name = "status", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "status_id", nullable = false)
     @JsonProperty("status")
-    protected UserStatusEnum status;
+    protected Status status;
 
     @NotNull
     @Column(name = "created_at", nullable = false)
@@ -141,8 +143,8 @@ public class User {
 
     // register by frontend
     public User(String email_phone, String firstName, String lastName, String password,
-        String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
-        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url) {
+        String birthday, String address, UserGenderEnum gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url) {
         this.email = email_phone;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -158,8 +160,8 @@ public class User {
     }
 
     public User(Long id, String firstName, String lastName, String email, String phone,
-        String password, String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
-        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        String password, String birthday, String address, UserGenderEnum gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url,
         int subscription) {
         this.id = id;
         this.firstName = firstName;
@@ -179,8 +181,8 @@ public class User {
     }
 
     public User(String firstName, String lastName, String email, String phone, String password,
-        String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
-        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        String birthday, String address, UserGenderEnum gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url,
         int subscription) {
         this.id = -1L;
         this.firstName = firstName;
@@ -200,8 +202,8 @@ public class User {
     }
 
     public User(Long id, String firstName, String lastName, String email, String phone,
-        String password, String birthday, String address, UserGenderEnum gender, UserRoleEnum role,
-        UserStatusEnum status, String created_at, String updated_at, byte[] avatar_url,
+        String password, String birthday, String address, UserGenderEnum gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url,
         int subscription, Score score) {
         this.id = id;
         this.firstName = firstName;
@@ -222,9 +224,12 @@ public class User {
     }
 
     public static void main(String[] args) {
+        Role role = new Role(1, UserRoleEnum.USER);
+        Status status = new Status(1, UserStatusEnum.VERIFIED);
+
         User user = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
             null, "", null,
-            "Ho Chi Minh", UserGenderEnum.MALE, UserRoleEnum.USER, UserStatusEnum.VERIFIED,
+            "Ho Chi Minh", UserGenderEnum.MALE, role, status,
             LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
         try {
             ValidatorUtil.validate(user);

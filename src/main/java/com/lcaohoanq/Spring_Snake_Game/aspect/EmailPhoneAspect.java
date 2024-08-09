@@ -27,7 +27,7 @@ public class EmailPhoneAspect {
         User user = userRepository.findByEmail(toEmail);
         if (user == null) {
             throw new UserNotFoundException(toEmail);
-        } else if (user.getStatus() == UserStatusEnum.BANNED) {
+        } else if (user.getStatus().getId() == UserStatusEnum.BANNED.getStatus()) {
             throw new UserHasBeenBannedException(toEmail);
         }
         request.setAttribute("validatedEmail", user);
@@ -38,7 +38,7 @@ public class EmailPhoneAspect {
         User user = userRepository.findByPhone(toPhone);
         if (user == null) {
             throw new UserNotFoundException(toPhone);
-        } else if (user.getStatus() == UserStatusEnum.BANNED) {
+        } else if (user.getStatus().getId() == UserStatusEnum.BANNED.getStatus()) {
             throw new UserHasBeenBannedException(toPhone);
         }
         request.setAttribute("validatedPhone", user);
@@ -55,7 +55,7 @@ public class EmailPhoneAspect {
         if(user == null){
             throw new UserNotFoundException(email_phone);
         }
-        if (user.getStatus() == UserStatusEnum.BANNED) {
+        if (user.getStatus().getId() == UserStatusEnum.BANNED.getStatus()) {
             throw new UserHasBeenBannedException(email_phone);
         }
         request.setAttribute("validatedAccount", user);
