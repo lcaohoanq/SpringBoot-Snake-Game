@@ -24,4 +24,6 @@ public class UserRegisterRequest {
     private String created_at;
     private String updated_at;
     private byte[] avatar_url;
+    private int google_account_id;
+    private int facebook_account_id;
 }

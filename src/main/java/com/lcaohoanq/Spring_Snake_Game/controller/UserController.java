@@ -102,6 +102,8 @@ public class UserController {
                 user.setUpdated_at(newUser.getUpdated_at());
                 user.setAvatar_url(newUser.getAvatar_url());
 //                user.setSubscription(newUser.getSubscription());
+                user.setGoogle_account_id(newUser.getGoogle_account_id());
+                user.setFacebook_account_id(newUser.getFacebook_account_id());
 
                 userRepository.save(user);
                 return new ResponseEntity<>(new UserResponse("Login Google successfully"),
