@@ -7,6 +7,7 @@ import com.lcaohoanq.Spring_Snake_Game.dto.request.UserUpdatePasswordRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.JwtResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserLoginRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.UserResponse;
+import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
 import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
@@ -46,8 +47,9 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping("")
-    List<User> all() {
-        return userRepository.findAll();
+    public List<User> all() {
+        return userRepository.findAll().stream().filter(user -> user.getRole().getRoleName().equals(
+            UserRoleEnum.USER)).toList();
     }
 
     @GetMapping("/{id}")
