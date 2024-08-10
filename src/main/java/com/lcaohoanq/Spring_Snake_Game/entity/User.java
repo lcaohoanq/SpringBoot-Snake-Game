@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.lcaohoanq.Spring_Snake_Game.constraint.PasswordConstraint;
+import com.lcaohoanq.Spring_Snake_Game.enums.SocialAccountProviderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
@@ -39,7 +40,7 @@ import lombok.ToString;
 @ToString(callSuper = true, exclude = {"score", "role", "status"})
 @JsonPropertyOrder({"id", "firstName", "lastName", "email", "phone", "password", "birthday",
     "address", "gender", "role", "status", "created_at", "updated_at", "avatar_url",
-    "subscription"})
+    "subscription", "facebook_id", "google_id"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "users")
 public class User {
@@ -125,6 +126,18 @@ public class User {
     @Column(name = "subscription", nullable = false)
     @JsonProperty("subscription")
     protected int subscription;
+
+    @Column(name="facebook_id")
+    @JsonProperty("facebook_id")
+    protected int facebook_account_id;
+
+    @Column(name="google_id")
+    @JsonProperty("google_id")
+    protected int google_account_id;
+
+    @OneToOne(mappedBy = "user") // Refers to the user field in Score
+    @JsonIgnore
+    protected SocialAccount socialAccount;
 
     @OneToOne(mappedBy = "user") // Refers to the user field in Score
     @JsonIgnore
@@ -223,6 +236,31 @@ public class User {
         this.score = score;
     }
 
+    public User(Long id, String firstName, String lastName, String email, String phone, String password,
+        String birthday, String address, UserGenderEnum gender, Role role,
+        Status status, String created_at, String updated_at, byte[] avatar_url,
+        int subscription, int facebook_account_id, int google_account_id) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+        this.birthday = birthday;
+        this.address = address;
+        this.gender = gender;
+        this.role = role;
+        this.status = status;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.avatar_url = avatar_url;
+        this.subscription = subscription;
+        this.facebook_account_id = facebook_account_id;
+        this.google_account_id = google_account_id;
+    }
+
+
+
     public static void main(String[] args) {
         Role role = new Role(1, UserRoleEnum.USER);
         Status status = new Status(1, UserStatusEnum.VERIFIED);
@@ -230,7 +268,13 @@ public class User {
         User user = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
             null, "", null,
             "Ho Chi Minh", UserGenderEnum.MALE, role, status,
-            LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
+            LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0, 0 ,0);
+
+        SocialAccount socialAccount = new SocialAccount(1L, SocialAccountProviderEnum.GOOGLE, SocialAccountProviderEnum.GOOGLE.getProvider(), user.getEmail(), user.getFirstName(), user);
+
+        user.setSocialAccount(socialAccount);
+
+
         try {
             ValidatorUtil.validate(user);
             System.out.println("User is valid");
