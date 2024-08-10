@@ -1,6 +1,5 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
-import com.github.luben.zstd.Zstd;
 import com.lcaohoanq.Spring_Snake_Game.constant.ResourcesPath;
 import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequest;
@@ -16,11 +15,7 @@ import com.lcaohoanq.Spring_Snake_Game.util.ImageCompression;
 import com.lcaohoanq.Spring_Snake_Game.util.LogUtils;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidateUtils;
-import com.mysql.cj.log.Log;
 import jakarta.validation.Valid;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -39,30 +34,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
 @Slf4j
+@RequestMapping(path = "${v1API}/users")
+@RestController
 public class UserController {
 
     @Autowired
     private UserRepository userRepository;
 
-    private PBKDF2 pbkdf2;
-
-    @GetMapping("/users")
+    @GetMapping("")
     List<User> all() {
         return userRepository.findAll();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     User getById(@PathVariable Long id) {
 
         return userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    @PostMapping("/users/oauth2/callback/google")
+    @PostMapping("/oauth2/callback/google")
     @Async
     public CompletableFuture<ResponseEntity<UserResponse>> createNewAccountGoogle(
         @Valid @RequestBody UserRegisterRequest newUser, BindingResult bindingResult) {
@@ -116,7 +111,7 @@ public class UserController {
         });
     }
 
-    @PostMapping("/users/register")
+    @PostMapping("/register")
     @Async
     public CompletableFuture<ResponseEntity<UserResponse>> createNew(
         @Valid @RequestBody UserRegisterRequest newUser, BindingResult bindingResult) {
@@ -188,7 +183,7 @@ public class UserController {
         });
     }
 
-    @PostMapping("/users/login")
+    @PostMapping("/login")
     @Async
     public CompletableFuture<ResponseEntity<? extends AbstractResponse>> login(@Valid @RequestBody UserLoginRequest user,
         BindingResult bindingResult) {
@@ -239,12 +234,12 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     void delete(@PathVariable Long id) {
         userRepository.deleteById(id);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     User updateOrCreate(@RequestBody User newUser, @PathVariable Long id) {
 
         return userRepository.findById(id)
@@ -259,7 +254,7 @@ public class UserController {
     }
 
     //update user password
-    @PostMapping("/users/updatePassword")
+    @PostMapping("/updatePassword")
     public ResponseEntity<UserResponse> updatePassword(@RequestBody UserUpdatePasswordRequest user) {
         User data;
 

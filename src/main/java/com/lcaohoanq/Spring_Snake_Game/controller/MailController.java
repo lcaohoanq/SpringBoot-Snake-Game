@@ -13,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.context.Context;
 
+@RequestMapping(path = "${v1API}/mail")
 @RestController
 public class MailController {
 
@@ -46,7 +48,7 @@ public class MailController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/mail/block")
+    @GetMapping("/block")
     ResponseEntity<MailResponse> sendBlockAccount(@RequestParam String toEmail) {
         User user = (User) request.getAttribute("validatedEmail");
         Context context = new Context();
@@ -57,7 +59,7 @@ public class MailController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/mail/forgot-password")
+    @GetMapping(path = "/forgotPassword")
     ResponseEntity<MailResponse> sendForgotPassword(@RequestParam String toEmail) {
         User user = (User) request.getAttribute("validatedEmail");
         String name = user.getFirstName();

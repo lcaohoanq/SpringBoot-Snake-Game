@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/otp")
+@RequestMapping(path = "${v1API}/otp")
 public class OtpController {
 
     @Autowired

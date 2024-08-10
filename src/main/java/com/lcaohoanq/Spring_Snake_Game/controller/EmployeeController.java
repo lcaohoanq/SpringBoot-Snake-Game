@@ -1,12 +1,14 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequestMapping(path = "${v1API}/employee")
 @RestController
 public class EmployeeController {
 
-    @PostMapping("/employee/register")
+    @PostMapping("/register")
     public void registerEmployee() {
         // Register employee
     }
