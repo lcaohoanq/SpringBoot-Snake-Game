@@ -53,7 +53,7 @@ public class ForgotPasswordController {
                 context);
         }
 
-        ForgotPasswordResponse response = new ForgotPasswordResponse("Sent successfully", "ok", otp);
+        ForgotPasswordResponse response = new ForgotPasswordResponse("Forgot password sent successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.dto;
+package com.lcaohoanq.Spring_Snake_Game.dto.base;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -11,18 +11,18 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class AbstractResponse {
+public class Response {
 
     protected String message;
     protected String status;
     protected String accessToken;
     protected String refreshToken;
 
-    public AbstractResponse(String message){
+    public Response(String message){
         this.message = message;
     }
 
-    public AbstractResponse(String accessToken, String refreshToken){
+    public Response(String accessToken, String refreshToken){
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }

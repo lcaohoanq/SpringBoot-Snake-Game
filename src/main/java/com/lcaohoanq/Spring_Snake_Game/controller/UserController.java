@@ -1,7 +1,7 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
 import com.lcaohoanq.Spring_Snake_Game.constant.ResourcesPath;
-import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.base.Response;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.request.UserUpdatePasswordRequest;
 import com.lcaohoanq.Spring_Snake_Game.dto.response.JwtResponse;
@@ -187,7 +187,7 @@ public class UserController {
 
     @PostMapping("/login")
     @Async
-    public CompletableFuture<ResponseEntity<? extends AbstractResponse>> login(@Valid @RequestBody UserLoginRequest user,
+    public CompletableFuture<ResponseEntity<? extends Response>> login(@Valid @RequestBody UserLoginRequest user,
         BindingResult bindingResult) {
         return CompletableFuture.supplyAsync(() -> {
             User userFound;

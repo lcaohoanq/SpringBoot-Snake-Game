@@ -1,6 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.dto.response;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.AbstractResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.base.Response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,17 +10,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MailResponse extends AbstractResponse {
+public class MailResponse extends Response {
 
-    protected String otp;
-
-    public MailResponse(String message, String status) {
-        super(message, status);
-    }
-
-    public MailResponse(String message, String status, String otp) {
-        super(message);
-        this.otp = otp;
-    }
+    private String message;
 
 }

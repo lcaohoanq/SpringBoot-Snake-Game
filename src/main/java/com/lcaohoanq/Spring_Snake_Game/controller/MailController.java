@@ -33,7 +33,7 @@ public class MailController {
         User user = (User) request.getAttribute("validatedEmail");
 
         if(user.getStatus().getId() == UserStatusEnum.VERIFIED.getStatus()){
-            return new ResponseEntity<>(new MailResponse("Email already verified", "error"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MailResponse("Email already verified"), HttpStatus.BAD_REQUEST);
         }
 
         String name = user.getFirstName();
@@ -44,7 +44,7 @@ public class MailController {
         mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name),
             EmailCategoriesEnum.OTP.getType(),
             context);
-        MailResponse response = new MailResponse("Mail sent successfully", "ok", otp);
+        MailResponse response = new MailResponse("Mail sent successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -55,7 +55,7 @@ public class MailController {
         context.setVariable("reason", EmailBlockReasonEnum.ABUSE.getReason());
         mailSenderService.sendNewMail(toEmail, EmailSubject.subjectBlockEmail(user.getFirstName()),
             EmailCategoriesEnum.BLOCK_ACCOUNT.getType(), context);
-        MailResponse response = new MailResponse("Mail sent successfully", "ok");
+        MailResponse response = new MailResponse("Mail sent successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -68,7 +68,7 @@ public class MailController {
         context.setVariable("name", name);
         context.setVariable("otp", otp);
         mailSenderService.sendNewMail(toEmail, EmailSubject.subjectGreeting(name), EmailCategoriesEnum.FORGOT_PASSWORD.getType(), context);
-        MailResponse response = new MailResponse("Mail sent successfully", "ok" , otp);
+        MailResponse response = new MailResponse("Mail sent successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
