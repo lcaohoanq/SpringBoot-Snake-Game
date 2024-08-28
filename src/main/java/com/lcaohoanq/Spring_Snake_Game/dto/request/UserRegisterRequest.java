@@ -4,6 +4,7 @@ package com.lcaohoanq.Spring_Snake_Game.dto.request;
 import com.lcaohoanq.Spring_Snake_Game.entity.Role;
 import com.lcaohoanq.Spring_Snake_Game.entity.Status;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,9 +22,9 @@ public class UserRegisterRequest {
     private UserGenderEnum gender;
     private Role role;
     private Status status;
-    private String created_at;
-    private String updated_at;
-    private byte[] avatar_url;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
+    private String avatar_url;
     private int google_account_id;
     private int facebook_account_id;
 }

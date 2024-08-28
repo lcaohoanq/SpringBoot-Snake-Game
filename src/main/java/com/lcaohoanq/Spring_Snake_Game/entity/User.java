@@ -43,7 +43,7 @@ import lombok.ToString;
     "subscription", "facebook_id", "google_id"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @NotNull
@@ -63,17 +63,14 @@ public class User {
     protected String lastName;
 
     @Email(message = "Email should be valid")
-    @Column(name = "email", unique = true)
     @JsonProperty("email")
     protected String email;
 
-    @Pattern(regexp = "(84|0[3|5|7|8|9])[0-9]{8}", message = "Phone number should be 10 digits, Viet Nam format")
-    @Column(name = "phone", unique = true)
+    //    @Pattern(regexp = "(84|0[3|5|7|8|9])[0-9]{8}", message = "Phone number should be 10 digits, Viet Nam format")
     @JsonProperty("phone")
     protected String phone;
 
     @NotNull
-    @Column(name = "password", nullable = false)
     @JsonProperty("password")
     @PasswordConstraint
     protected String password;
@@ -107,31 +104,21 @@ public class User {
     @JsonProperty("status")
     protected Status status;
 
-    @NotNull
-    @Column(name = "created_at", nullable = false)
-    @JsonProperty("created_at")
-    protected String created_at;
-
-    @NotNull
-    @Column(name = "updated_at", nullable = false)
-    @JsonProperty("updated_at")
-    protected String updated_at;
-
-    @Lob
+    //    @Lob
     @Column(name = "avatar_url", length = 1000000)
     @JsonProperty("avatar_url")
-    protected byte[] avatar_url;
+    protected String avatar_url;
 
     @NotNull
     @Column(name = "subscription", nullable = false)
     @JsonProperty("subscription")
     protected int subscription;
 
-    @Column(name="facebook_id")
+    @Column(name = "facebook_id")
     @JsonProperty("facebook_id")
     protected int facebook_account_id;
 
-    @Column(name="google_id")
+    @Column(name = "google_id")
     @JsonProperty("google_id")
     protected int google_account_id;
 
@@ -157,7 +144,8 @@ public class User {
     // register by frontend
     public User(String email_phone, String firstName, String lastName, String password,
         String birthday, String address, UserGenderEnum gender, Role role,
-        Status status, String created_at, String updated_at, byte[] avatar_url) {
+        Status status, LocalDateTime created_at, LocalDateTime updated_at, String avatar_url) {
+        super(created_at, updated_at);
         this.email = email_phone;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -167,15 +155,14 @@ public class User {
         this.gender = gender;
         this.role = role;
         this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.avatar_url = avatar_url;
     }
 
     public User(Long id, String firstName, String lastName, String email, String phone,
         String password, String birthday, String address, UserGenderEnum gender, Role role,
-        Status status, String created_at, String updated_at, byte[] avatar_url,
+        Status status, LocalDateTime created_at, LocalDateTime updated_at, String avatar_url,
         int subscription) {
+        super(created_at, updated_at);
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -187,16 +174,15 @@ public class User {
         this.gender = gender;
         this.role = role;
         this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.avatar_url = avatar_url;
         this.subscription = subscription;
     }
 
     public User(String firstName, String lastName, String email, String phone, String password,
         String birthday, String address, UserGenderEnum gender, Role role,
-        Status status, String created_at, String updated_at, byte[] avatar_url,
+        Status status, LocalDateTime created_at, LocalDateTime updated_at, String avatar_url,
         int subscription) {
+        super(created_at, updated_at);
         this.id = -1L;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -208,16 +194,15 @@ public class User {
         this.gender = gender;
         this.role = role;
         this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.avatar_url = avatar_url;
         this.subscription = subscription;
     }
 
     public User(Long id, String firstName, String lastName, String email, String phone,
         String password, String birthday, String address, UserGenderEnum gender, Role role,
-        Status status, String created_at, String updated_at, byte[] avatar_url,
+        Status status, LocalDateTime created_at, LocalDateTime updated_at, String avatar_url,
         int subscription, Score score) {
+        super(created_at, updated_at);
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -229,17 +214,17 @@ public class User {
         this.gender = gender;
         this.role = role;
         this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.avatar_url = avatar_url;
         this.subscription = subscription;
         this.score = score;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String phone, String password,
+    public User(Long id, String firstName, String lastName, String email, String phone,
+        String password,
         String birthday, String address, UserGenderEnum gender, Role role,
-        Status status, String created_at, String updated_at, byte[] avatar_url,
+        Status status, LocalDateTime created_at, LocalDateTime updated_at, String avatar_url,
         int subscription, int facebook_account_id, int google_account_id) {
+        super(created_at, updated_at);
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -251,14 +236,11 @@ public class User {
         this.gender = gender;
         this.role = role;
         this.status = status;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         this.avatar_url = avatar_url;
         this.subscription = subscription;
         this.facebook_account_id = facebook_account_id;
         this.google_account_id = google_account_id;
     }
-
 
 
     public static void main(String[] args) {
@@ -268,12 +250,13 @@ public class User {
         User user = new User(1L, "hoang", "luu", "hoangdz1604@gmail.com",
             null, "", null,
             "Ho Chi Minh", UserGenderEnum.MALE, role, status,
-            LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0, 0 ,0);
+            LocalDateTime.now(), LocalDateTime.now(), null, 0, 0, 0);
 
-        SocialAccount socialAccount = new SocialAccount(1L, SocialAccountProviderEnum.GOOGLE, SocialAccountProviderEnum.GOOGLE.getProvider(), user.getEmail(), user.getFirstName(), user);
+        SocialAccount socialAccount = new SocialAccount(1L, SocialAccountProviderEnum.GOOGLE,
+            SocialAccountProviderEnum.GOOGLE.getProvider(), user.getEmail(), user.getFirstName(),
+            user);
 
         user.setSocialAccount(socialAccount);
-
 
         try {
             ValidatorUtil.validate(user);

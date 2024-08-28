@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.javafaker.Faker;
 import com.lcaohoanq.Spring_Snake_Game.entity.User;
 import java.awt.BorderLayout;
 import java.util.List;
@@ -82,6 +83,11 @@ public class ApiCallApp extends JFrame {
         SwingUtilities.invokeLater(() -> {
             new ApiCallApp().setVisible(true);
         });
+
+        Faker faker = new Faker();
+        String phone = "0" + faker.number().numberBetween(3, 9) + faker.number().digits(8);
+        System.out.println(phone);
+
     }
 }
 

@@ -1,5 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.listener;
 
+import com.github.javafaker.Faker;
 import com.lcaohoanq.Spring_Snake_Game.entity.Role;
 import com.lcaohoanq.Spring_Snake_Game.entity.Score;
 import com.lcaohoanq.Spring_Snake_Game.entity.SocialAccount;
@@ -14,8 +15,11 @@ import com.lcaohoanq.Spring_Snake_Game.repository.ScoreRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.SocialAccountRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.StatusRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
+import com.lcaohoanq.Spring_Snake_Game.service.UserService;
+import com.lcaohoanq.Spring_Snake_Game.util.AvatarConverter;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import java.time.LocalDateTime;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,18 +27,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class DemoDataRunner implements CommandLineRunner {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ScoreRepository scoreRepository;
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private StatusRepository statusRepository;
-    @Autowired
-    private SocialAccountRepository socialAccountRepository;
+    private final UserRepository userRepository;
+    private final ScoreRepository scoreRepository;
+    private final RoleRepository roleRepository;
+    private final StatusRepository statusRepository;
+    private final SocialAccountRepository socialAccountRepository;
+    private final UserService userService;
 
     private Role getOrCreateRole(UserRoleEnum userRoleEnum) {
         Role role = roleRepository.findByRoleName(userRoleEnum);
@@ -45,18 +46,22 @@ public class DemoDataRunner implements CommandLineRunner {
         return role;
     }
 
-    private Status getOrCreateStatusField(UserStatusEnum userStatus){
+    private Status getOrCreateStatusField(UserStatusEnum userStatus) {
         Status status = statusRepository.findByStatusName(userStatus);
-        if(status == null){
+        if (status == null) {
             status = new Status(userStatus.getStatus(), userStatus);
             statusRepository.save(status);
         }
         return status;
     }
 
-    private User getOrCreateUser(Long id, String firstName, String lastName, String email, String phone, String password, String birthday, String address, UserGenderEnum gender, Role role, Status status, String createdAt, String updatedAt, byte[] avatarUrl, int subscription) {
+    private User getOrCreateUser(Long id, String firstName, String lastName, String email,
+        String phone, String password, String birthday, String address, UserGenderEnum gender,
+        Role role, Status status, LocalDateTime createdAt, LocalDateTime updatedAt, String avatarUrl,
+        int subscription) {
         return userRepository.findById(id).orElseGet(() -> {
-            User user = new User(id, firstName, lastName, email, phone, password, birthday, address, gender, role, status, createdAt, updatedAt, avatarUrl, subscription);
+            User user = new User(id, firstName, lastName, email, phone, password, birthday, address,
+                gender, role, status, createdAt, updatedAt, avatarUrl, subscription);
             // Ensure the user is added to the role's user set
             role.getUsers().add(user);
             status.getUsers().add(user);
@@ -74,86 +79,79 @@ public class DemoDataRunner implements CommandLineRunner {
         userRepository.save(user);
     }
 
+
     @Override
     public void run(String... args) {
-        try{
-
+        try {
             log.info("Starting DemoDataRunner...");
 
             String hashedPassword = new PBKDF2().hash("Iloveyou123!".toCharArray());
+            Faker faker = new Faker();
 
-            Role adminRole = getOrCreateRole(UserRoleEnum.ADMIN);
+            // Retrieve or create roles and statuses
             Role userRole = getOrCreateRole(UserRoleEnum.USER);
             Role employeeRole = getOrCreateRole(UserRoleEnum.EMPLOYEE);
             Role userGoldRole = getOrCreateRole(UserRoleEnum.USER_GOLD);
             Role userPremiumRole = getOrCreateRole(UserRoleEnum.USER_PREMIUM);
+            Role[] possibleRoles = {userRole, employeeRole, userGoldRole, userPremiumRole};
 
-            Status unverified = getOrCreateStatusField(UserStatusEnum.UNVERIFIED);
             Status verified = getOrCreateStatusField(UserStatusEnum.VERIFIED);
+            Status unverified = getOrCreateStatusField(UserStatusEnum.UNVERIFIED);
             Status banned = getOrCreateStatusField(UserStatusEnum.BANNED);
+            Status[] possibleStatuses = {verified, unverified, banned};
 
-            User user1 = getOrCreateUser(1L, "hoang", "luu", "hoangdz1604@gmail.com", null, hashedPassword, "1999-07-01", "Duong Vo Van Hat, Ho Chi Minh City", UserGenderEnum.MALE, adminRole, unverified, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 1);
-            User user2 = getOrCreateUser(2L, "duong", "nguyen", null, "0987654322", hashedPassword, "1999-07-01", "Thanh Pho Tam Ki, Tinh Quang Nam", UserGenderEnum.MALE, userRole, verified, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
-            User user3 = getOrCreateUser(3L, "thu", "minh", null, "0987654323", hashedPassword, "1999-07-01", "Quan 9, Thu Duc", UserGenderEnum.FEMALE, userRole, banned, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
-            User user4 = getOrCreateUser(4L, "nhu", "minh", "mnhw.0612@gmail.com", null, hashedPassword, "2006-12-06", "Nguyen Tat Thanh St, Da Nang City", UserGenderEnum.FEMALE, userRole, banned, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
-            User user5 = getOrCreateUser(5L, "chau", "bao", "doanthibaochau0410@gmail.com", null, hashedPassword, "2004-07-01", "Hoa Khanh", UserGenderEnum.FEMALE, employeeRole, banned, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
-            User user6 = getOrCreateUser(6L, "Duong", "Manh", "manhduonglhp4@gmail.com", null, hashedPassword, "2004-07-01", "Hoa Khanh", UserGenderEnum.MALE, userGoldRole, unverified, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
-            User user7 = getOrCreateUser(7L, "Tram", "Minh", "tramsowavy@gmail.com", null, hashedPassword, "2004-07-01", "Hoa Xuan, Hoa Vang, Da Nang", UserGenderEnum.FEMALE, userPremiumRole, verified, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
-            User user8 = getOrCreateUser(8L, "きむら", "山口", "test1@yahoo.com", null, hashedPassword, "2004-07-01", "Tokyo, Japan", UserGenderEnum.FEMALE, userPremiumRole, verified, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
-            User user9 = getOrCreateUser(9L, "えいみ", "ふかだ", "test2@gmail.com", null, hashedPassword, "2004-07-01", "Nakayama, Japan", UserGenderEnum.MALE, userPremiumRole, verified, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
-            User user10 = getOrCreateUser(10L, "Hai", "Luu Van", "test3@outlook.com", null, hashedPassword, "2004-07-01", "Tuy Loan, Hoa Phong", UserGenderEnum.MALE, userPremiumRole, verified, LocalDateTime.now().toString(), LocalDateTime.now().toString(), null, 0);
+            // Create users 11 to 500 with Faker
+            for (long i = 1; i <= 500; i++) {
+                String email = faker.internet().emailAddress();
+                String phone = "0" + faker.number().numberBetween(3, 9) + faker.number().digits(8);
+                if (userService.existsByEmail(email) || userService.existsByPhone(phone)) {
+                    continue;
+                }
+                String firstName = faker.name().firstName();
+                String lastName = faker.name().lastName();
+                String birthday = faker.date().birthday(18, 65).toString();
+                String address = faker.address().fullAddress();
+//                byte[] avatarUrl = AvatarConverter.convertAvatarUrlToByteArray(faker.avatar().image());
+                String avatarUrl = faker.avatar().image();
+                UserGenderEnum gender =
+                    faker.bool().bool() ? UserGenderEnum.MALE : UserGenderEnum.FEMALE;
 
-            userRepository.findAll().forEach(System.out::println);
+                // Randomly select a status for each user
+                Status randomStatus = possibleStatuses[faker.random().nextInt(possibleStatuses.length)];
 
-            Score score1 = new Score(10, 90, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user1);
-            Score score2 = new Score(1, 1, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user2);
-            Score score3 = new Score(2, 20, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user3);
-            Score score4 = new Score(3, 12, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user4);
-            Score score5 = new Score(4, 9, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user5);
-            Score score6 = new Score(5, 56, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user6);
-            Score score7 = new Score(6, 9, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user7);
-            Score score8 = new Score(7, 34, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user8);
-            Score score9 = new Score(8, 9, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user9);
-            Score score10 = new Score(9, 9, LocalDateTime.now().toString(), LocalDateTime.now().toString(), user10);
+                // Randomly select a role for each user
+                Role randomeRole = possibleRoles[faker.random().nextInt(possibleRoles.length)];
 
-            scoreRepository.findAll().forEach(System.out::println);
+                User user = getOrCreateUser(
+                    i, firstName, lastName, email, phone, hashedPassword,
+                    birthday, address, gender, randomeRole, randomStatus,
+                    LocalDateTime.now(), LocalDateTime.now(), avatarUrl,
+                    faker.number().randomDigit()
+                );
 
-            scoreRepository.save(score1);
-            scoreRepository.save(score2);
-            scoreRepository.save(score3);
-            scoreRepository.save(score4);
-            scoreRepository.save(score5);
-            scoreRepository.save(score6);
-            scoreRepository.save(score7);
-            scoreRepository.save(score8);
-            scoreRepository.save(score9);
-            scoreRepository.save(score10);
+                userRepository.save(user);
 
-            SocialAccount socialAccount1 = new SocialAccount(SocialAccountProviderEnum.GOOGLE, SocialAccountProviderEnum.GOOGLE.getProvider(), user1.getEmail(), user1.getFirstName(), user1);
-            SocialAccount socialAccount2 = new SocialAccount(SocialAccountProviderEnum.FACEBOOK, SocialAccountProviderEnum.FACEBOOK.getProvider(), user4.getEmail(), user4.getFirstName(), user4);
-            SocialAccount socialAccount3 = new SocialAccount(SocialAccountProviderEnum.GOOGLE, SocialAccountProviderEnum.GOOGLE.getProvider(), user5.getEmail(), user5.getFirstName(), user5);
-            SocialAccount socialAccount4 = new SocialAccount(SocialAccountProviderEnum.GOOGLE, SocialAccountProviderEnum.GOOGLE.getProvider(), user6.getEmail(), user6.getFirstName(), user6);
-            SocialAccount socialAccount5 = new SocialAccount(SocialAccountProviderEnum.GOOGLE, SocialAccountProviderEnum.GOOGLE.getProvider(), user7.getEmail(), user7.getFirstName(), user7);
+                // Optionally create related entities like Score or SocialAccount here
+                Score score = new Score(faker.number().randomDigit(),
+                    faker.number().numberBetween(0, 100), LocalDateTime.now().toString(),
+                    LocalDateTime.now().toString(), user);
+                scoreRepository.save(score);
 
-            socialAccountRepository.findAll().forEach(System.out::println);
+                // Randomly select a social account provider
+                SocialAccountProviderEnum[] providers = SocialAccountProviderEnum.values();
+                SocialAccountProviderEnum randomProvider = providers[faker.random().nextInt(providers.length)];
 
-            socialAccountRepository.save(socialAccount1);
-            socialAccountRepository.save(socialAccount2);
-            socialAccountRepository.save(socialAccount3);
-            socialAccountRepository.save(socialAccount4);
-            socialAccountRepository.save(socialAccount5);
+                SocialAccount socialAccount = new SocialAccount(randomProvider,
+                    randomProvider.getProvider(), user.getEmail(),
+                    user.getFirstName(), user);
+                socialAccountRepository.save(socialAccount);
 
-            userRepository.findAll().forEach(System.out::println);
-
-            // Update users with social account IDs
-            updateUserSocialAccountId(user1, socialAccount1);
-            updateUserSocialAccountId(user4, socialAccount2);
-            updateUserSocialAccountId(user5, socialAccount3);
-            updateUserSocialAccountId(user6, socialAccount4);
-            updateUserSocialAccountId(user7, socialAccount5);
+                // Update user with social account ID if necessary
+                updateUserSocialAccountId(user, socialAccount);
+            }
 
             log.info("Demo data created successfully");
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("Error while creating demo data", e);
         }
     }

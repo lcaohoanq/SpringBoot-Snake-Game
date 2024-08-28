@@ -95,8 +95,8 @@ public class UserController {
                 user.setGender(newUser.getGender());
                 user.setRole(newUser.getRole());
                 user.setStatus(newUser.getStatus());
-                user.setCreated_at(newUser.getCreated_at());
-                user.setUpdated_at(newUser.getUpdated_at());
+                user.setCreatedAt(newUser.getCreated_at());
+                user.setUpdatedAt(newUser.getUpdated_at());
                 user.setAvatar_url(newUser.getAvatar_url());
 //                user.setSubscription(newUser.getSubscription());
                 user.setGoogle_account_id(newUser.getGoogle_account_id());
@@ -120,7 +120,7 @@ public class UserController {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 if (bindingResult.hasErrors()) {
-                    LogUtils.showLogValidationFailed(newUser.getCreated_at());
+                    LogUtils.showLogValidationFailed(newUser.getCreated_at().toString());
                     throw new MethodArgumentNotValidException(bindingResult);
                 }
 
@@ -151,7 +151,8 @@ public class UserController {
 
                 // Hash the password before saving the user
                 newUser.setPassword(new PBKDF2().hash(newUser.getPassword().toCharArray()));
-                newUser.setAvatar_url(ImageCompression.compressImage(ResourcesPath.AVATAR_ANONYMOUS));
+//                newUser.setAvatar_url(ImageCompression.compressImage(ResourcesPath.AVATAR_ANONYMOUS));
+                newUser.setAvatar_url(null);
 
                 // Save the user to the repository
                 User user = new User();
@@ -166,19 +167,19 @@ public class UserController {
                 user.setGender(newUser.getGender());
                 user.setRole(newUser.getRole());
                 user.setStatus(newUser.getStatus());
-                user.setCreated_at(newUser.getCreated_at());
-                user.setUpdated_at(newUser.getUpdated_at());
+                user.setCreatedAt(newUser.getCreated_at());
+                user.setUpdatedAt(newUser.getUpdated_at());
                 user.setAvatar_url(newUser.getAvatar_url());
 //                user.setSubscription(newUser.getSubscription());
 
                 userRepository.save(user);
 
-                LogUtils.showLogNewUserRegistered(newUser.getCreated_at());
+                LogUtils.showLogNewUserRegistered(newUser.getCreated_at().toString());
 
                 return new ResponseEntity<>(new UserResponse("Register successfully"),
                     HttpStatus.OK);
             }  catch(Exception e){
-                LogUtils.showLogErrorWhenRegisterNewUser(newUser.getCreated_at(), e.getMessage());
+                LogUtils.showLogErrorWhenRegisterNewUser(newUser.getCreated_at().toString(), e.getMessage());
                 return new ResponseEntity<>(new UserResponse(e.getMessage()),
                     HttpStatus.BAD_REQUEST);
             }

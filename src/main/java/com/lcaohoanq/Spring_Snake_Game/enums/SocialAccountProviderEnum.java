@@ -8,7 +8,10 @@ import lombok.Getter;
 public enum SocialAccountProviderEnum {
 
     GOOGLE(0),
-    FACEBOOK(1);
+    FACEBOOK(1),
+    INSTAGRAM(2),
+    TWITTER(3),
+    MICROSOFT(4);
 
     private final int provider;
 
