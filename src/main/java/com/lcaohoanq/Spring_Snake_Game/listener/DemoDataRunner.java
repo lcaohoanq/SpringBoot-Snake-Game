@@ -57,7 +57,8 @@ public class DemoDataRunner implements CommandLineRunner {
 
     private User getOrCreateUser(Long id, String firstName, String lastName, String email,
         String phone, String password, String birthday, String address, UserGenderEnum gender,
-        Role role, Status status, LocalDateTime createdAt, LocalDateTime updatedAt, String avatarUrl,
+        Role role, Status status, LocalDateTime createdAt, LocalDateTime updatedAt,
+        String avatarUrl,
         int subscription) {
         return userRepository.findById(id).orElseGet(() -> {
             User user = new User(id, firstName, lastName, email, phone, password, birthday, address,
@@ -101,9 +102,17 @@ public class DemoDataRunner implements CommandLineRunner {
             Status[] possibleStatuses = {verified, unverified, banned};
 
             // Create users 11 to 500 with Faker
-            for (long i = 1; i <= 500; i++) {
+            for (long i = 1; i <= 200; i++) {
+                // Decide randomly whether to make email or phone null, but not both
+//                boolean makeEmailNull = faker.bool().bool();
+//                boolean makePhoneNull = !makeEmailNull; // Ensure one is null and the other is not
+//
+//                String email = makeEmailNull ? null : faker.internet().emailAddress();
+//                String phone = makePhoneNull ? null : "0" + faker.number().numberBetween(3, 9) + faker.number().digits(8);
+
                 String email = faker.internet().emailAddress();
                 String phone = "0" + faker.number().numberBetween(3, 9) + faker.number().digits(8);
+
                 if (userService.existsByEmail(email) || userService.existsByPhone(phone)) {
                     continue;
                 }
@@ -117,7 +126,8 @@ public class DemoDataRunner implements CommandLineRunner {
                     faker.bool().bool() ? UserGenderEnum.MALE : UserGenderEnum.FEMALE;
 
                 // Randomly select a status for each user
-                Status randomStatus = possibleStatuses[faker.random().nextInt(possibleStatuses.length)];
+                Status randomStatus = possibleStatuses[faker.random()
+                    .nextInt(possibleStatuses.length)];
 
                 // Randomly select a role for each user
                 Role randomeRole = possibleRoles[faker.random().nextInt(possibleRoles.length)];
@@ -126,7 +136,7 @@ public class DemoDataRunner implements CommandLineRunner {
                     i, firstName, lastName, email, phone, hashedPassword,
                     birthday, address, gender, randomeRole, randomStatus,
                     LocalDateTime.now(), LocalDateTime.now(), avatarUrl,
-                    faker.number().randomDigit()
+                    faker.number().numberBetween(0, 2) //2 is exclusive
                 );
 
                 userRepository.save(user);
@@ -139,7 +149,8 @@ public class DemoDataRunner implements CommandLineRunner {
 
                 // Randomly select a social account provider
                 SocialAccountProviderEnum[] providers = SocialAccountProviderEnum.values();
-                SocialAccountProviderEnum randomProvider = providers[faker.random().nextInt(providers.length)];
+                SocialAccountProviderEnum randomProvider = providers[faker.random()
+                    .nextInt(providers.length)];
 
                 SocialAccount socialAccount = new SocialAccount(randomProvider,
                     randomProvider.getProvider(), user.getEmail(),

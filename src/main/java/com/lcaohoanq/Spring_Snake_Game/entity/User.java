@@ -23,6 +23,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
@@ -67,6 +68,7 @@ public class User extends BaseEntity {
     protected String email;
 
     //    @Pattern(regexp = "(84|0[3|5|7|8|9])[0-9]{8}", message = "Phone number should be 10 digits, Viet Nam format")
+    @Column(name = "phone_number", length = 10)
     @JsonProperty("phone")
     protected String phone;
 
@@ -77,7 +79,6 @@ public class User extends BaseEntity {
 
     //@NotNull, the birthday will be null if the user does not provide it
     //we can update later
-    @Column(name = "birthday", nullable = false)
     @JsonProperty("birthday")
     protected String birthday;
 
@@ -114,11 +115,11 @@ public class User extends BaseEntity {
     @JsonProperty("subscription")
     protected int subscription;
 
-    @Column(name = "facebook_id")
+    @NotNull
     @JsonProperty("facebook_id")
     protected int facebook_account_id;
 
-    @Column(name = "google_id")
+    @NotNull
     @JsonProperty("google_id")
     protected int google_account_id;
 
