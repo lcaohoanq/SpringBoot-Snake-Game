@@ -24,3 +24,8 @@ mysqldump -h localhost -P 3308 -u root -p mysql_starter > data.sql
 
 # Enter password: ************
 ```
+
+- I have the extra profiles in the `application-xampp.properties` file. To run the project with the specific profile, run the below command
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=xampp
+```
