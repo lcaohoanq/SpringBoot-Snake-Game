@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.dto.request;
+package com.lcaohoanq.Spring_Snake_Game.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

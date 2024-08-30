@@ -1,18 +1,13 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
-import com.lcaohoanq.Spring_Snake_Game.constant.ResourcesPath;
-import com.lcaohoanq.Spring_Snake_Game.dto.base.Response;
-import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequest;
-import com.lcaohoanq.Spring_Snake_Game.dto.request.UserUpdatePasswordRequest;
-import com.lcaohoanq.Spring_Snake_Game.dto.response.JwtResponse;
-import com.lcaohoanq.Spring_Snake_Game.dto.request.UserLoginRequest;
-import com.lcaohoanq.Spring_Snake_Game.dto.response.UserResponse;
-import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
+import com.lcaohoanq.Spring_Snake_Game.model.request.UserRegisterRequest;
+import com.lcaohoanq.Spring_Snake_Game.model.request.UserUpdatePasswordRequest;
+import com.lcaohoanq.Spring_Snake_Game.model.request.UserLoginRequest;
+import com.lcaohoanq.Spring_Snake_Game.model.response.UserResponse;
 import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
-import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.dto.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
-import com.lcaohoanq.Spring_Snake_Game.util.ImageCompression;
 import com.lcaohoanq.Spring_Snake_Game.util.LogUtils;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import com.lcaohoanq.Spring_Snake_Game.util.ValidateUtils;
@@ -22,9 +17,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -39,17 +34,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping(path = "${v1API}/users")
 @RestController
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("")
-    public List<User> all() {
-        return userRepository.findAll().stream().filter(user -> user.getRole().getRoleName().equals(
-            UserRoleEnum.USER)).toList();
+    public List<User> getAll() {
+        return userRepository.findAll().stream().toList();
     }
 
     @GetMapping("/{id}")
@@ -105,7 +99,7 @@ public class UserController {
                 userRepository.save(user);
                 return new ResponseEntity<>(new UserResponse("Login Google successfully"),
                     HttpStatus.OK);
-            }  catch(Exception e){
+            } catch (Exception e) {
                 log.error("An error occurred while creating a new user: {}", e.getMessage());
                 return new ResponseEntity<>(new UserResponse(e.getMessage()),
                     HttpStatus.BAD_REQUEST);
@@ -124,7 +118,8 @@ public class UserController {
                     throw new MethodArgumentNotValidException(bindingResult);
                 }
 
-                if (StringUtils.isBlank(newUser.getEmail()) && StringUtils.isBlank(newUser.getPhone())) {
+                if (StringUtils.isBlank(newUser.getEmail()) && StringUtils.isBlank(
+                    newUser.getPhone())) {
                     throw new IllegalArgumentException("Either email or phone must be provided.");
                 } else {
                     boolean emailExists = false;
@@ -140,14 +135,15 @@ public class UserController {
 
                     if (emailExists) {
                         LogUtils.showLogExistedUser("Email", newUser.getEmail());
-                        return new ResponseEntity<>(new UserResponse("Email already exists"), HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>(new UserResponse("Email already exists"),
+                            HttpStatus.BAD_REQUEST);
                     }
                     if (phoneExists) {
                         LogUtils.showLogExistedUser("Phone number", newUser.getPhone());
-                        return new ResponseEntity<>(new UserResponse("Phone number already exists"), HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>(new UserResponse("Phone number already exists"),
+                            HttpStatus.BAD_REQUEST);
                     }
                 }
-
 
                 // Hash the password before saving the user
                 newUser.setPassword(new PBKDF2().hash(newUser.getPassword().toCharArray()));
@@ -178,8 +174,9 @@ public class UserController {
 
                 return new ResponseEntity<>(new UserResponse("Register successfully"),
                     HttpStatus.OK);
-            }  catch(Exception e){
-                LogUtils.showLogErrorWhenRegisterNewUser(newUser.getCreated_at().toString(), e.getMessage());
+            } catch (Exception e) {
+                LogUtils.showLogErrorWhenRegisterNewUser(newUser.getCreated_at().toString(),
+                    e.getMessage());
                 return new ResponseEntity<>(new UserResponse(e.getMessage()),
                     HttpStatus.BAD_REQUEST);
             }
@@ -188,7 +185,8 @@ public class UserController {
 
     @PostMapping("/login")
     @Async
-    public CompletableFuture<ResponseEntity<? extends Response>> login(@Valid @RequestBody UserLoginRequest user,
+    public CompletableFuture<ResponseEntity<?>> login(
+        @Valid @RequestBody UserLoginRequest user,
         BindingResult bindingResult) {
         return CompletableFuture.supplyAsync(() -> {
             User userFound;
@@ -202,13 +200,15 @@ public class UserController {
             String emailOrPhone = user.getEmail_phone();
             boolean isEmail = ValidateUtils.checkTypeAccount(emailOrPhone);
 
-            userFound = isEmail ? userRepository.findByEmail(emailOrPhone) : userRepository.findByPhone(emailOrPhone);
+            userFound = isEmail ? userRepository.findByEmail(emailOrPhone)
+                : userRepository.findByPhone(emailOrPhone);
 
             if (userFound == null) {
                 String notFoundMessage = isEmail ? "Email not found: " : "Phone number not found: ";
                 log.error("{}{}", notFoundMessage, emailOrPhone);
                 String responseMessage = isEmail ? "Email not found" : "Phone number not found";
-                return new ResponseEntity<>(new UserResponse(responseMessage), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new UserResponse(responseMessage),
+                    HttpStatus.BAD_REQUEST);
             }
 
             if (!ValidateUtils.authenticate(user.getPassword(), userFound.getPassword())) {
@@ -220,11 +220,10 @@ public class UserController {
             LogUtils.showLogLoginSuccess(LocalDateTime.now().toString());
 
             // Generate tokens
-            JwtResponse jwtResponse = new JwtResponse("accessToken", "refreshToken");
 
-            return new ResponseEntity<>(jwtResponse, HttpStatus.OK);
+            return new ResponseEntity<>("some tokens", HttpStatus.OK);
         }).orTimeout(10, TimeUnit.SECONDS).exceptionally(ex -> {
-            if(ex instanceof TimeoutException){
+            if (ex instanceof TimeoutException) {
                 LogUtils.showLogTimeOutException(LocalDateTime.now().toString());
                 return new ResponseEntity<>(new UserResponse("TimeoutException"),
                     HttpStatus.REQUEST_TIMEOUT);
@@ -257,22 +256,23 @@ public class UserController {
     }
 
     //update user password
-    @PostMapping("/updatePassword")
-    public ResponseEntity<UserResponse> updatePassword(@RequestBody UserUpdatePasswordRequest user) {
+    @PutMapping("/updatePassword")
+    public ResponseEntity<UserResponse> updatePassword(
+        @RequestBody UserUpdatePasswordRequest user) {
         User data;
 
-        if(ValidateUtils.checkTypeAccount(user.getIdentifier())){
+        if (ValidateUtils.checkTypeAccount(user.getIdentifier())) {
             data = userRepository.findByEmail(user.getIdentifier());
-        }else{
+        } else {
             data = userRepository.findByPhone(user.getIdentifier());
         }
 
-        if(data == null){
+        if (data == null) {
             return new ResponseEntity<>(new UserResponse("User not found"),
                 HttpStatus.BAD_REQUEST);
         }
 
-        data.setPassword(user.getNewPassword());
+        data.setPassword(new PBKDF2().hash(user.getNewPassword().toCharArray()));
         userRepository.save(data);
 
         return new ResponseEntity<>(new UserResponse("Password updated successfully"),

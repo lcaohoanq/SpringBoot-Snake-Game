@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.entity;
+package com.lcaohoanq.Spring_Snake_Game.dto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

@@ -1,7 +1,7 @@
 package com.lcaohoanq.Spring_Snake_Game.integration;
 
-import com.lcaohoanq.Spring_Snake_Game.entity.Role;
-import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.dto.Role;
+import com.lcaohoanq.Spring_Snake_Game.dto.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
 import com.lcaohoanq.Spring_Snake_Game.repository.RoleRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;

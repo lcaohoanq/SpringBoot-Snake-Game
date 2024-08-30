@@ -1,8 +1,8 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
 import com.lcaohoanq.Spring_Snake_Game.constant.ApiConstant;
-import com.lcaohoanq.Spring_Snake_Game.entity.Status;
-import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.dto.Status;
+import com.lcaohoanq.Spring_Snake_Game.dto.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

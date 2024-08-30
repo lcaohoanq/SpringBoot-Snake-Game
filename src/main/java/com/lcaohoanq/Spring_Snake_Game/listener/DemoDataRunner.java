@@ -1,11 +1,11 @@
 package com.lcaohoanq.Spring_Snake_Game.listener;
 
 import com.github.javafaker.Faker;
-import com.lcaohoanq.Spring_Snake_Game.entity.Role;
-import com.lcaohoanq.Spring_Snake_Game.entity.Score;
-import com.lcaohoanq.Spring_Snake_Game.entity.SocialAccount;
-import com.lcaohoanq.Spring_Snake_Game.entity.Status;
-import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.dto.Role;
+import com.lcaohoanq.Spring_Snake_Game.dto.Score;
+import com.lcaohoanq.Spring_Snake_Game.dto.SocialAccount;
+import com.lcaohoanq.Spring_Snake_Game.dto.Status;
+import com.lcaohoanq.Spring_Snake_Game.dto.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.SocialAccountProviderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
@@ -16,12 +16,10 @@ import com.lcaohoanq.Spring_Snake_Game.repository.SocialAccountRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.StatusRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.service.UserService;
-import com.lcaohoanq.Spring_Snake_Game.util.AvatarConverter;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -89,6 +87,7 @@ public class DemoDataRunner implements CommandLineRunner {
             log.info("Starting DemoDataRunner...");
 
             String hashedPassword = new PBKDF2().hash("Iloveyou123!".toCharArray());
+
             Faker faker = new Faker();
 
             // Retrieve or create roles and statuses
@@ -104,7 +103,7 @@ public class DemoDataRunner implements CommandLineRunner {
             Status[] possibleStatuses = {verified, unverified, banned};
 
             // Create users 11 to 500 with Faker
-            for (long i = 1; i <= 200; i++) {
+            for (long i = 1; i <= 5; i++) {
                 // Decide randomly whether to make email or phone null, but not both
 //                boolean makeEmailNull = faker.bool().bool();
 //                boolean makePhoneNull = !makeEmailNull; // Ensure one is null and the other is not
@@ -145,8 +144,8 @@ public class DemoDataRunner implements CommandLineRunner {
 
                 // Optionally create related entities like Score or SocialAccount here
                 Score score = new Score(faker.number().randomDigit(),
-                    faker.number().numberBetween(0, 100), LocalDateTime.now().toString(),
-                    LocalDateTime.now().toString(), user);
+                    faker.number().numberBetween(0, 100), LocalDateTime.now(),
+                    LocalDateTime.now(), user);
                 scoreRepository.save(score);
 
                 // Randomly select a social account provider
@@ -162,6 +161,11 @@ public class DemoDataRunner implements CommandLineRunner {
                 // Update user with social account ID if necessary
                 updateUserSocialAccountId(user, socialAccount);
             }
+
+            Role adminRole = getOrCreateRole(UserRoleEnum.ADMIN);
+            Status verifiedStatus = getOrCreateStatusField(UserStatusEnum.VERIFIED);
+            User myAccount = new User(6L, "hoang", "luu", "hoangdz1604@gmail.com", null, hashedPassword, "1999-07-01", "Duong Vo Van Hat, Ho Chi Minh City", UserGenderEnum.MALE, adminRole, verifiedStatus, LocalDateTime.now(), LocalDateTime.now(), null, 1);
+            userRepository.save(myAccount);
 
             log.info("Demo data created successfully");
         } catch (Exception e) {

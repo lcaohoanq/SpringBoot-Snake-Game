@@ -1,7 +1,7 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.response.PhoneResponse;
-import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.model.response.PhoneResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;

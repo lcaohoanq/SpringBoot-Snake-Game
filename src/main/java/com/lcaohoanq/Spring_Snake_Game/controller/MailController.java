@@ -1,8 +1,8 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
 import com.lcaohoanq.Spring_Snake_Game.constant.EmailSubject;
-import com.lcaohoanq.Spring_Snake_Game.dto.response.MailResponse;
-import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.model.response.MailResponse;
+import com.lcaohoanq.Spring_Snake_Game.dto.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.EmailBlockReasonEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.EmailCategoriesEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;

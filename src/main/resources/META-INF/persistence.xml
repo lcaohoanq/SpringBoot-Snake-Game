@@ -2,10 +2,10 @@
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.1">
   <persistence-unit name="Spring-Snake-Game-PU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    <class>com.lcaohoanq.Spring_Snake_Game.entity.User</class>
-    <class>com.lcaohoanq.Spring_Snake_Game.entity.Score</class>
-    <class>com.lcaohoanq.Spring_Snake_Game.entity.Role</class>
-    <class>com.lcaohoanq.Spring_Snake_Game.entity.Status</class>
+    <class>com.lcaohoanq.Spring_Snake_Game.dto.User</class>
+    <class>com.lcaohoanq.Spring_Snake_Game.dto.Score</class>
+    <class>com.lcaohoanq.Spring_Snake_Game.dto.Role</class>
+    <class>com.lcaohoanq.Spring_Snake_Game.dto.Status</class>
     <properties>
       <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
       <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"/>

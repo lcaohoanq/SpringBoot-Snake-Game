@@ -1,8 +1,7 @@
 package com.lcaohoanq.Spring_Snake_Game.exception;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.base.Response;
-import com.lcaohoanq.Spring_Snake_Game.dto.response.MailResponse;
-import com.lcaohoanq.Spring_Snake_Game.dto.response.UserResponse;
+import com.lcaohoanq.Spring_Snake_Game.model.response.MailResponse;
+import com.lcaohoanq.Spring_Snake_Game.model.response.UserResponse;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -19,8 +18,8 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<Response> userNotFoundHandler(UserNotFoundException ex) {
-        if(ex.getMessage().contains("email")) {
+    public ResponseEntity<?> userNotFoundHandler(UserNotFoundException ex) {
+        if (ex.getMessage().contains("email")) {
             return new ResponseEntity<>(new MailResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(new UserResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
@@ -29,7 +28,8 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(
+        MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -42,8 +42,9 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(UserHasBeenBannedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Response> userNotFoundHandler(UserHasBeenBannedException ex) {
-        return new ResponseEntity<>(new UserResponse(ex.getMessage(), "error"), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<UserResponse> userNotFoundHandler(UserHasBeenBannedException ex) {
+        return new ResponseEntity<>(new UserResponse(ex.getMessage()),
+            HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NullPointerException.class)

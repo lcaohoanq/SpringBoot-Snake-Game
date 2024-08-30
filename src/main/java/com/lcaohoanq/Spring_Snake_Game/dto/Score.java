@@ -1,5 +1,6 @@
-package com.lcaohoanq.Spring_Snake_Game.entity;
+package com.lcaohoanq.Spring_Snake_Game.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -9,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ import lombok.ToString;
 @ToString
 @JsonPropertyOrder({ "id", "last_score", "max_score", "created_at", "updated_at", "user"})
 @Entity
-public class Score {
+public class Score extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,21 +39,14 @@ public class Score {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id") // Foreign key column in Score table
+    @JsonIgnore
     private User user;
 
-    @NotNull
-    @Column(name="created_at", nullable = false)
-    private String created_at;
 
-    @NotNull
-    @Column(name="updated_at", nullable = false)
-    private String updated_at;
-
-    public Score(int last_score, int max_score, String created_at, String updated_at, User user) {
+    public Score(int last_score, int max_score, LocalDateTime created_at, LocalDateTime updated_at, User user) {
+        super(created_at, updated_at);
         this.last_score = last_score;
         this.max_score = max_score;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
         if (user != null) {
             this.id = user.getId();
             this.setUser(user);

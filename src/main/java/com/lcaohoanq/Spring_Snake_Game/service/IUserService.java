@@ -1,10 +1,12 @@
 package com.lcaohoanq.Spring_Snake_Game.service;
 
-import com.lcaohoanq.Spring_Snake_Game.entity.User;
+import com.lcaohoanq.Spring_Snake_Game.dto.User;
 
-public interface IUserService {
+public interface IUserService{
 
     boolean existsByEmail(String email);
     boolean existsByPhone(String phone);
+    User findById(Long id);
+    User findByEmail(String email);
 
 }
