@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.lcaohoanq.Spring-Snake-Game' is invalid and this project uses 'com.lcaohoanq.Spring_Snake_Game' instead.
+* The original package name 'com.lcaohoanq.Spring-Snake-Game' is invalid and this project uses 'com.lcaohoanq.springbootsnakegame' instead.
 
 # Getting Started
 

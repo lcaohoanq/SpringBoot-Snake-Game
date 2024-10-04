@@ -1,9 +1,9 @@
-package com.lcaohoanq.Spring_Snake_Game.controller;
+package com.lcaohoanq.springbootsnakegame.controller;
 
-import com.lcaohoanq.Spring_Snake_Game.constant.ApiConstant;
-import com.lcaohoanq.Spring_Snake_Game.model.Status;
-import com.lcaohoanq.Spring_Snake_Game.model.User;
-import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
+import com.lcaohoanq.springbootsnakegame.constant.ApiConstant;
+import com.lcaohoanq.springbootsnakegame.model.Status;
+import com.lcaohoanq.springbootsnakegame.model.User;
+import com.lcaohoanq.springbootsnakegame.enums.UserStatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

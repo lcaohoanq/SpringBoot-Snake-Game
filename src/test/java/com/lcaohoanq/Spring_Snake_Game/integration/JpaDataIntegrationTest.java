@@ -1,10 +1,10 @@
-package com.lcaohoanq.Spring_Snake_Game.integration;
+package com.lcaohoanq.springbootsnakegame.integration;
 
-import com.lcaohoanq.Spring_Snake_Game.model.Role;
-import com.lcaohoanq.Spring_Snake_Game.model.User;
-import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
-import com.lcaohoanq.Spring_Snake_Game.repository.RoleRepository;
-import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
+import com.lcaohoanq.springbootsnakegame.model.Role;
+import com.lcaohoanq.springbootsnakegame.model.User;
+import com.lcaohoanq.springbootsnakegame.enums.UserRoleEnum;
+import com.lcaohoanq.springbootsnakegame.repository.RoleRepository;
+import com.lcaohoanq.springbootsnakegame.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

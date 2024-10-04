@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.util;
+package com.lcaohoanq.springbootsnakegame.util;
 
 
 import org.junit.jupiter.api.Test;
