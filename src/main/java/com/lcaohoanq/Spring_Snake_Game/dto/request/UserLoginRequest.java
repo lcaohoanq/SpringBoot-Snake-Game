@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.model.request;
+package com.lcaohoanq.Spring_Snake_Game.dto.request;
 
 
 import jakarta.validation.constraints.NotEmpty;

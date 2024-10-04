@@ -1,6 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.aspect;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.User;
+import com.lcaohoanq.Spring_Snake_Game.model.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserHasBeenBannedException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;

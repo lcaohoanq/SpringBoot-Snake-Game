@@ -1,6 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.service;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.User;
+import com.lcaohoanq.Spring_Snake_Game.model.User;
 
 public interface IUserService{
 

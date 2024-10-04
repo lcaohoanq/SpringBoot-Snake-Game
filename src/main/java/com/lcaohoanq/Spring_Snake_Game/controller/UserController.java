@@ -1,12 +1,12 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
-import com.lcaohoanq.Spring_Snake_Game.model.request.UserRegisterRequest;
-import com.lcaohoanq.Spring_Snake_Game.model.request.UserUpdatePasswordRequest;
-import com.lcaohoanq.Spring_Snake_Game.model.request.UserLoginRequest;
+import com.lcaohoanq.Spring_Snake_Game.dto.request.UserRegisterRequest;
+import com.lcaohoanq.Spring_Snake_Game.dto.request.UserUpdatePasswordRequest;
+import com.lcaohoanq.Spring_Snake_Game.dto.request.UserLoginRequest;
 import com.lcaohoanq.Spring_Snake_Game.model.response.UserResponse;
 import com.lcaohoanq.Spring_Snake_Game.exception.MethodArgumentNotValidException;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
-import com.lcaohoanq.Spring_Snake_Game.dto.User;
+import com.lcaohoanq.Spring_Snake_Game.model.User;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import com.lcaohoanq.Spring_Snake_Game.util.LogUtils;
 import com.lcaohoanq.Spring_Snake_Game.util.PBKDF2;

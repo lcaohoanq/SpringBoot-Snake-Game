@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.dto;
+package com.lcaohoanq.Spring_Snake_Game.model;
 
 import com.lcaohoanq.Spring_Snake_Game.enums.SocialAccountProviderEnum;
 import jakarta.persistence.CascadeType;

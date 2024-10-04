@@ -1,7 +1,7 @@
 package com.lcaohoanq.Spring_Snake_Game.service;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.Score;
-import com.lcaohoanq.Spring_Snake_Game.dto.User;
+import com.lcaohoanq.Spring_Snake_Game.model.Score;
+import com.lcaohoanq.Spring_Snake_Game.model.User;
 import com.lcaohoanq.Spring_Snake_Game.exception.UserNotFoundException;
 import com.lcaohoanq.Spring_Snake_Game.repository.ScoreRepository;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;

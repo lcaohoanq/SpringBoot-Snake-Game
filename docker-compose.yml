@@ -4,8 +4,13 @@ services:
     container_name: spring_snake_game
     ports:
       - "3308:3306"
-    env_file:
-      - .env
+#    env_file:
+#      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: Luucaohoang1604^^
+      MYSQL_DATABASE: mysql_starter
+      MYSQL_USER: lcaohoanq
+      MYSQL_PASSWORD: Luucaohoang1604^^
     volumes:
       - db_data:/var/lib/mysql
 

@@ -1,6 +1,6 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
-import com.lcaohoanq.Spring_Snake_Game.dto.User;
+import com.lcaohoanq.Spring_Snake_Game.model.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;
 import com.lcaohoanq.Spring_Snake_Game.repository.UserRepository;
 import java.util.List;

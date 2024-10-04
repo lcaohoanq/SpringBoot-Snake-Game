@@ -1,8 +1,8 @@
-package com.lcaohoanq.Spring_Snake_Game.model.request;
+package com.lcaohoanq.Spring_Snake_Game.dto.request;
 
 
-import com.lcaohoanq.Spring_Snake_Game.dto.Role;
-import com.lcaohoanq.Spring_Snake_Game.dto.Status;
+import com.lcaohoanq.Spring_Snake_Game.model.Role;
+import com.lcaohoanq.Spring_Snake_Game.model.Status;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
 import java.time.LocalDateTime;
 import lombok.Getter;

@@ -1,11 +1,11 @@
 package com.lcaohoanq.Spring_Snake_Game.listener;
 
 import com.github.javafaker.Faker;
-import com.lcaohoanq.Spring_Snake_Game.dto.Role;
-import com.lcaohoanq.Spring_Snake_Game.dto.Score;
-import com.lcaohoanq.Spring_Snake_Game.dto.SocialAccount;
-import com.lcaohoanq.Spring_Snake_Game.dto.Status;
-import com.lcaohoanq.Spring_Snake_Game.dto.User;
+import com.lcaohoanq.Spring_Snake_Game.model.Role;
+import com.lcaohoanq.Spring_Snake_Game.model.Score;
+import com.lcaohoanq.Spring_Snake_Game.model.SocialAccount;
+import com.lcaohoanq.Spring_Snake_Game.model.Status;
+import com.lcaohoanq.Spring_Snake_Game.model.User;
 import com.lcaohoanq.Spring_Snake_Game.enums.SocialAccountProviderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserGenderEnum;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserRoleEnum;

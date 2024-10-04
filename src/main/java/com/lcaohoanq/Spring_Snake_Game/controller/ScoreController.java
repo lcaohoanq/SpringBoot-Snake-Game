@@ -1,8 +1,8 @@
 package com.lcaohoanq.Spring_Snake_Game.controller;
 
-import com.lcaohoanq.Spring_Snake_Game.model.request.UpdateScoreRequest;
-import com.lcaohoanq.Spring_Snake_Game.dto.Score;
-import com.lcaohoanq.Spring_Snake_Game.dto.User;
+import com.lcaohoanq.Spring_Snake_Game.dto.request.UpdateScoreRequest;
+import com.lcaohoanq.Spring_Snake_Game.model.Score;
+import com.lcaohoanq.Spring_Snake_Game.model.User;
 import com.lcaohoanq.Spring_Snake_Game.service.IScoreService;
 import com.lcaohoanq.Spring_Snake_Game.service.IUserService;
 import lombok.RequiredArgsConstructor;

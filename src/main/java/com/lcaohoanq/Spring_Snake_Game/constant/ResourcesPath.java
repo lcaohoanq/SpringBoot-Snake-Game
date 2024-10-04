@@ -2,6 +2,6 @@ package com.lcaohoanq.Spring_Snake_Game.constant;
 
 public class ResourcesPath {
 
-    public static final String AVATAR_ANONYMOUS = "src/main/resources/META-INF/resources/icons/anonymous_user.png";
+    public static final String AVATAR_ANONYMOUS = "src/main/resources/img/icons/anonymous_user.png";
 
 }

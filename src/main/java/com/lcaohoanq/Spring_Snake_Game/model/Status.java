@@ -1,4 +1,4 @@
-package com.lcaohoanq.Spring_Snake_Game.dto;
+package com.lcaohoanq.Spring_Snake_Game.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lcaohoanq.Spring_Snake_Game.enums.UserStatusEnum;
